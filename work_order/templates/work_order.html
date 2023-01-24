@@ -1,0 +1,100 @@
+{% extends "main.html" %} {% load static %} {% block 'head' %}
+<link rel="stylesheet" href="{% static 'css/main.css' %}" />
+<link rel="stylesheet" href="{% static 'work_order/css/work_order.css' %}" />
+{% endblock %} {% block 'main' %}
+<div class="row">
+  <div id="cad_cli_tit">
+    <a>Ordem de serviço</a>
+  </div>
+
+  {% if messages %}
+  <br />
+  {% for message in messages %}
+  <div class="alert {{message.tags}}">{{message}}</div>
+  {% endfor %} {% endif %}
+
+  <div class="actions_bar">
+    <a href="{% url 'new_work_order' %}" id="btn_nc" type="button" class="btn btn-success">
+      Cadastrar nova Ordem de serviço
+    </a>
+    <a id="btn_ac" type="button" class="btn btn-primary">
+      Exportar lista de ordens de serviço
+    </a>
+  </div>
+  <div class="col-md-12 mb-3">
+    <div class="card">
+      <div class="card-header">
+        <span><i class="bi bi-table me-2"></i></span> Ordem de serviço
+      </div>
+      <div class="card-body">
+        <div id="table_cli" class="table-responsive">
+          <table
+            id="example"
+            class="table table-striped data-table"
+            style="width: 100%"
+          >
+            <thead>
+              <tr>
+                <th>OS </th>
+                <th>Cliente</th>
+                <th>Produto</th>
+                <th>Entrada</th>
+                <th>Saída</th>
+                <th>Valor</th>
+                <th>Pago</th>
+                <th>pgto</th>
+                <th>Status</th>
+                <th id="acoes_th">Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for orders in workorders %}
+              <tr>
+                <td>{{ orders.id }}</td>
+                <td>{{ orders.cod_cli }}</td>
+                <td>{{ orders.cod_prod }}</td>
+                <td>{{ orders.data_entrada }}</td>
+                <td>{{ orders.data_saida }}</td>
+                <td>{{ orders.total }}</td>
+                <td>{{ orders.status }}</td>
+                 <td
+                  {% if orders.pgto_adiantado == True %}
+                  <span id = "op1">pago</span>
+                    {% elif orders.os_finalizada == False %}
+                    <span id = "op2">a pagar</span>
+                  {% endif %}
+                  <td
+                  {% if orders.os_finalizada == True %}
+                    <span id = "op3">fechada</span>
+                  {% elif orders.os_finalizada == False %}
+                    <span id = "op4">aberta</span>
+                  {% endif %}
+                </td> 
+                </td>
+                <th>
+                  <a href="{% url 'edit_work_order' orders.id %}" id="btn_ap" type="button" class="btn btn-primary">
+                    <i class="bi bi-printer"></i>
+                  </a>
+                  <a href="{% url 'edit_work_order' orders.id %}" id="btn_ap" type="button" class="btn btn-success">
+                    <i class="bi bi-pen"></i>
+                  </a>
+                  <a href="{% url 'del_work_order' orders.id %}" id="btn_ap" type="button" class="btn btn-danger delete">
+                    <i class="bi bi-trash"></i>
+                  </a>
+                </a>
+                <a href="https://api.whatsapp.com/send?phone=55{{order.whatsapp}}&text=Ol%C3%A1, {{orders.cad_cli}} tudo bem?" id="btn_wz" type="button" class="btn btn-success">
+                  <i class="bi bi-whatsapp"></i>
+                </a>
+                </th>
+              </tr>
+              {% endfor %}
+            </tbody>
+            <tfoot></tfoot>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="{% static 'clients/js/script.js'%}"></script>
+{% endblock%}
