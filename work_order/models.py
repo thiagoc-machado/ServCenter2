@@ -12,7 +12,7 @@ class work_order(models.Model):
     cod_tec = models.ForeignKey(Employees, on_delete=models.DO_NOTHING)
     cod_ser = models.ForeignKey(Services, on_delete=models.DO_NOTHING)
     cod_user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
-    whatsapp =  models.CharField(max_length=20, null=True, blank=True)
+    whatsapp = models.CharField(max_length=20, null=True, blank=True)
     obs_cli = models.CharField(max_length=50, null=True, blank=True)
     data_entrada = models.DateField(auto_now_add=True, blank=True)
     status = models.CharField(max_length=20, null=True, blank=True)
@@ -35,11 +35,10 @@ class work_order(models.Model):
     pgto_adiantado = models.BooleanField()
     os_finalizada = models.BooleanField()
 
-    
-
     def __str__(self):
         return self.nome
 
+
 class image(models.Model):
     photo = models.ImageField(upload_to="work_order")
-    order = models.ForeignKey(Services,on_delete=models.CASCADE)
+    order = models.ForeignKey(Services, on_delete=models.CASCADE)
