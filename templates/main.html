@@ -63,6 +63,18 @@
                 <span>Novo Cliente</span>
               </a>
             </li>
+            <li>
+              <a id="in" href="{% url 'new_client' %}" class="nav-link px-3">
+                <span class="me-2"><i class="bi bi-person-plus-fill"></i></span>
+                <span>Entrada Avulsa</span>
+              </a>
+            </li>
+            <li>
+              <a id="out" href="{% url 'new_client' %}" class="nav-link px-3">
+                <span class="me-2"><i class="bi bi-person-plus-fill"></i></span>
+                <span>Saída Avulsa</span>
+              </a>
+            </li>
             <li class="my-4"><hr class="dropdown-divider bg-light" /></li>
             <li>
               <div class="text-muted small fw-bold text-uppercase px-3 mb-3">
@@ -70,8 +82,14 @@
               </div>
             </li>
             <li>
+              <a href="{% url 'finance' %}" class="nav-link px-3">
+                <span class="me-2"><i class="bi bi-cash"></i></span>
+                <span>Financeiro</span>
+              </a>
+            </li>
+            <li>
               <a href="{% url 'clients' %}" class="nav-link px-3">
-                <span class="me-2"><i class="bi bi-wrench"></i></span>
+                <span class="me-2"><i class="bi bi-person-circle"></i></span>
                 <span>Clientes</span>
               </a>
             </li>
@@ -93,7 +111,7 @@
                 data-bs-toggle="collapse"
                 href="#layouts"
               >
-                <span class="me-2"><i class="bi bi-person"></i></span>
+                <span class="me-2"><i class="bi bi-ui-checks"></i></span>
                 <span>Configurações</span>
                 <span class="ms-auto">
                   <span class="right-icon">

@@ -27,6 +27,12 @@ button {
 #n_cli {
   background: rgba(47, 95, 255, 0.234);
 }
+#in{
+  background-color: #2a9c3d9c;
+}
+#out{
+  background-color: #fa6c6c9a;
+}
 #tit_motores {
   text-align: center;
   margin-left: -10px;
