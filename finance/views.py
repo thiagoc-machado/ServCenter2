@@ -45,9 +45,33 @@ def new_finance(request):
             )
         finances.save()
         messages.add_message(request, constants.SUCCESS,
-                                 'Novo cliente cadastrado com sucesso')
+                                 'Nova entrada cadastrada com sucesso')
     return redirect('finance')
 
+def new_finance_out(request):
+    if request.method == "GET":
+        data=date.today().strftime('%Y-%m-%d')
+        finances = Finance.objects.all()
+        return render(request, 'new_finance_out.html', {'finances': finances, 'data': data})
+    
+    elif request.method == "POST":
+        obs = request.POST.get("inputOs")
+        nome = request.POST.get("inputNome")
+        data = request.POST.get("inputData")
+        valor = request.POST.get("inputValor")
+        movimento = 'saida'
+        
+        finances = Finance(
+            obs=obs,
+            nome=nome,
+            data=data,
+            valor=valor,
+            movimento=movimento,
+            )
+        finances.save()
+        messages.add_message(request, constants.SUCCESS,
+                                 'Nova saída cadastrada com sucesso')
+    return redirect('finance')
 
 
 def edit_finance(request):
