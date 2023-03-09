@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.contrib import messages
+from django.http import HttpResponse, HttpResponseBadRequest
 from django.contrib.messages import constants
 from django.contrib.auth.decorators import login_required
 from .models import client, User
@@ -12,6 +13,9 @@ def clients(request):
         cli = client.objects.all()
 
         return render(request, 'clients.html', {'cli': cli})
+    else:
+        return HttpResponseBadRequest('Invalid request method')
+
 
 
 @login_required
@@ -91,6 +95,8 @@ def new_client(request):
             messages.add_message(request, constants.SUCCESS,
                                  'Novo cliente cadastrado com sucesso')
             return redirect('clients')
+    else:
+        return HttpResponseBadRequest('Invalid request method')
 
 
 @ login_required
@@ -177,3 +183,5 @@ def edit_client(request, cod_cli):
             messages.add_message(request, constants.SUCCESS,
                                  'Cliente atualizado com sucesso')
             return redirect('clients')
+    else:
+        return HttpResponseBadRequest('Invalid request method')

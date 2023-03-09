@@ -40,17 +40,27 @@
 
   <div class="actions_bar">
     <a
-      href="{% url 'new_client' %}"
+      href="{% url 'new_finance' %}"
       id="btn_nc"
       type="button"
       class="btn btn-success"
     >
       Entrada avulsa no caixa
     </a>
-    <a id="btn_ac" type="button" class="btn btn-danger">
+    <a
+      href="{% url 'edit_finance' %}"
+      id="btn_ac"
+      type="button"
+      class="btn btn-danger"
+    >
       Saída avulsa no caixa
     </a>
-    <a id="btn_ac" type="button" class="btn btn-primary">
+    <a
+      href="{% url 'del_finance' %}"
+      id="btn_ac"
+      type="button"
+      class="btn btn-primary"
+    >
       Exportar movimentação
     </a>
     <div>
