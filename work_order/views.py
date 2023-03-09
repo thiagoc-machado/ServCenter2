@@ -8,6 +8,7 @@ from .models import Services
 from .models import client
 from .models import Employees
 from .models import work_order as work_order_model
+from finance.models import Finance
 
 
 @login_required
@@ -15,7 +16,7 @@ def work_order(request):
     if request.method == "GET":
         # serv = Services.objects.all()
         workorders = work_order_model.objects.all()
-        # print(list_client)
+        #print(Services.objects.get(cod=id).nome)
         return render(request, 'work_order.html', {'workorders': workorders})
     else:
         return HttpResponseBadRequest('Invalid request method')
@@ -131,6 +132,17 @@ def edit_work_order(request, id):
     list_client = client.objects.all()
     list_employee = Employees.objects.all()
     list_service = Services.objects.all()
+
+    try:
+        service = Services.objects.get(cod=id)
+    except:
+        service = ""
+    try:
+        tipo = Services.objects.get(cod=id).tipo
+    except:
+        tipo = ""
+        
+    print(service, tipo)    
     if request.method == "GET":
         return render(request, 'edit_work_order.html', {
             'id': id,
@@ -157,8 +169,8 @@ def edit_work_order(request, id):
             'defeito': work_order_model.objects.get(id=id).defeito,
             'obs_ser': work_order_model.objects.get(id=id).obs_ser,
             'solucao': work_order_model.objects.get(id=id).solucao,
-            'servico': Services.objects.get(cod=id).nome,
-            'servico_tipo': Services.objects.get(cod=id).tipo,
+            'servico': service,
+            'servico_tipo': tipo,
             'preco': work_order_model.objects.get(id=id).preco,
             'desconto': work_order_model.objects.get(id=id).desconto,
             'acressimo': work_order_model.objects.get(id=id).acressimo,
@@ -172,39 +184,41 @@ def edit_work_order(request, id):
         })
 
     if request.method == "POST":
-        service = Services.objects.get(cod=id)
-        work_orders = work_order_model(
+        
+        work_orders = work_order_model.objects.get(id=id)
+            
+        work_orders.cod_cli=client.objects.get(pk=request.POST.get("cod_cli"))
+        work_orders.cod_tec=Employees.objects.get(pk=request.POST.get("cod_tecnico"))
+        work_orders.cod_ser=Services.objects.get(cod=id)
+        work_orders.cod_user=request.user
+        work_orders.whatsapp=request.POST.get("whatsapp")
+        work_orders.status=request.POST.get("status")
+        work_orders.obs_cli=request.POST.get("obs_cli")
+        work_orders.produto=request.POST.get("produto")
+        work_orders.marca=request.POST.get("marca")
+        work_orders.modelo=request.POST.get("modelo")
+        work_orders.serie=request.POST.get("serie")
+        work_orders.condicao=request.POST.get("condicao")
+        work_orders.acessorios=request.POST.get("acessorios")
+        work_orders.defeito=request.POST.get("defeito")
+        work_orders.obs_ser=request.POST.get("obs_ser")
+        work_orders.solucao=request.POST.get("solucao")
+        work_orders.preco=request.POST.get("preco")
+        work_orders.desconto=request.POST.get("desconto")
+        work_orders.acressimo=request.POST.get("acressimo")
+        work_orders.total=request.POST.get("total")
+        work_orders.modo_pgto=request.POST.get("modo_pgto")
+        work_orders.data_alteracao=datetime.now().date().strftime("%Y-%m-%d")
+        work_orders.pgto_adiantado=True if request.POST.get(
+            "pgto_adiantado") else False
+        work_orders.os_finalizada=True if request.POST.get("os_finalizada") else False
+           
+        print(work_orders.cod_ser)
+        work_orders.save()
 
-            cod_cli=client.objects.get(pk=request.POST.get("cod_cli")),
-            cod_tec=Employees.objects.get(pk=request.POST.get("cod_tecnico")),
-            cod_ser=service,
-            cod_user=request.user,
-            whatsapp=request.POST.get("whatsapp"),
-            status=request.POST.get("status"),
-            obs_cli=request.POST.get("obs_cli"),
-            produto=request.POST.get("produto"),
-            marca=request.POST.get("marca"),
-            modelo=request.POST.get("modelo"),
-            serie=request.POST.get("serie"),
-            condicao=request.POST.get("condicao"),
-            acessorios=request.POST.get("acessorios"),
-            defeito=request.POST.get("defeito"),
-            obs_ser=request.POST.get("obs_ser"),
-            solucao=request.POST.get("solucao"),
-            preco=request.POST.get("preco"),
-            desconto=request.POST.get("desconto"),
-            acressimo=request.POST.get("acressimo"),
-            total=request.POST.get("total"),
-            modo_pgto=request.POST.get("modo_pgto"),
-            data_alteracao=datetime.now().date().strftime("%Y-%m-%d"),
-            pgto_adiantado=True if request.POST.get(
-                "pgto_adiantado") else False,
-            os_finalizada=True if request.POST.get("os_finalizada") else False,
-        )
-
-        work_orders.save() 
         messages.success(request, 'Ordem de serviço atualizada com sucesso!')
     return redirect('work_order')
+
 
 
 @ login_required

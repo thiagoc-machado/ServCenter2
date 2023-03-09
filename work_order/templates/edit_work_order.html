@@ -217,7 +217,6 @@
         <p class= "p-1 mb-2 bg-info text-white">Dados do serviço</p>
 
         <div class="col-md-3">
-            <i>oi {{cod_tecnico}}</i>
             <label for="tecnico" class="form-label">tecnico resp.</label>
             <select name="cod_tecnico" class="form-select chosen" id="cod_tecnico" value="{{cod_tecnico}}">
                 <option>{{cod_tecnico}}</option>
@@ -231,14 +230,14 @@
         <div class="col-md-3">
             <label for="servico" class="form-label">Serviço</label>
             <select name="cod_ser" class="form-select chosen" id="cod_ser" value="service.cod">
-                <option>"{{servico}} - {{servico_tipo}}"</option>
+                <option>{{servico}} - {{servico_tipo}}</option>
                 {% for service in list_service %}
-                <option value = "{{service.cod}}">{{ service.nome}} - {{service.tipo }}</option>
+                <option value = "{{service.cod}}">{{ service.nome}}  {{service.tipo }}</option>
                 {% endfor %}
             </select>
             <div class="error-message" id="error-message"></div>
         </div>
-        <i>oi {{service.cod}}</i>
+        
         <div class="col-md-6">
         <label for="solucao" class="form-label">Descr. do serviço</label>
             <input
