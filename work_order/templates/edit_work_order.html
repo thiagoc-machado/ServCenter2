@@ -33,16 +33,23 @@
             class="form-control"
             placeholder="Auto"
             name="cod_cli"
+            value="{{cod_cli}}"
         />
         </div>
 
 
         <div class="col-md-4">
             <label for="nome" class="form-label">Cliente</label>
-            <input list="list_clients" class="form-select" placeholder="Digite para buscar" name="cliente" onchange="getSelectedValue()"> 
+            <input list="list_clients" class="form-select" placeholder="Digite para buscar" name="cliente" onchange="getSelectedValue()" value='{{nome}}'readonly> 
             <datalist id="list_clients">
+                select
                 {% for clients in list_client %}
-                <option data-cod_cli="{{ clients.cod_cli }}" data-whatsapp="{{clients.whatsapp}}" value="{{clients.nome}}"> {{ clients.nome }}</option>
+                    <option data-cod="{{ clients.cod_cli }}" 
+                        data-whatsapp="{{clients.whatsapp}}" 
+                        data-nome="{{clients.nome}}"
+                        value="{{clients.nome}}">
+                    </option>
+                    <i>{{ clients.nome }}</i>
                 {% endfor %}
             </datalist>
         </div>
@@ -52,17 +59,17 @@
             <label for="telefone" class="form-label">Tel / Whatsapp</label>
             <input
                 id="whatsapp"
-                type="text"
+                type="text" readonly
                 class="form-control"
                 placeholder="tel / whatsapp"
                 name="whatsapp"
-                value="{{clients.whatsapp}}"
+                value="{{whatsapp}}"
             />
         </div>
 
         <div class="col-md-2">
             <label for="data_entrada" class="form-label">Data de entrada.</label>
-            <input type="date" readonly class="form-control" name="data_entrada"  value="{{data}}" />
+            <input type="date" readonly class="form-control" name="data_entrada"  value="{{data_entrada}}" />
         </div>
 
         <div class="col-md-2">
@@ -72,7 +79,7 @@
             class="form-control"
             placeholder="hh:mm"
             name="hora"
-            value="{{hora}}"
+            value="{{hora_entrada}}"
             />
         </div>
 
@@ -210,11 +217,12 @@
         <p class= "p-1 mb-2 bg-info text-white">Dados do serviço</p>
 
         <div class="col-md-3">
+            <i>oi {{cod_tecnico}}</i>
             <label for="tecnico" class="form-label">tecnico resp.</label>
             <select name="cod_tecnico" class="form-select chosen" id="cod_tecnico" value="{{cod_tecnico}}">
-                <option></option>
+                <option>{{cod_tecnico}}</option>
                 {% for employee in list_employee %}
-                <option value = "{{employee.cod}}">{{ employee.nome}}</option>
+                <option selected = {{employee.nome}} value = "{{employee.cod}}">{{ employee.nome}}</option>
                 {% endfor %}
             </select>
             <div class="error-message" id="error-message"></div>
@@ -222,15 +230,15 @@
 
         <div class="col-md-3">
             <label for="servico" class="form-label">Serviço</label>
-            <select name="cod_ser" class="form-select chosen" id="cod_ser" value="{{cod_ser}}">
-                <option></option>
+            <select name="cod_ser" class="form-select chosen" id="cod_ser" value="service.cod">
+                <option>"{{servico}} - {{servico_tipo}}"</option>
                 {% for service in list_service %}
                 <option value = "{{service.cod}}">{{ service.nome}} - {{service.tipo }}</option>
                 {% endfor %}
             </select>
             <div class="error-message" id="error-message"></div>
         </div>
-
+        <i>oi {{service.cod}}</i>
         <div class="col-md-6">
         <label for="solucao" class="form-label">Descr. do serviço</label>
             <input
@@ -254,7 +262,7 @@
                 class="form-control"
                 placeholder="Valor do serviço"
                 name="preco"
-                value="{{service.preco}}"
+                value="{{preco}}"
             />
         </div>
         <div class="col-md-4">
@@ -286,7 +294,7 @@
                 class="form-control"
                 placeholder="Total"
                 name="total"
-                value=""
+                value="{{total}}"
             />
         </div>
 
@@ -305,26 +313,33 @@
         <p></p>
         <div class="col-12">
             <div class="form-check form-switch" id="is_active">
-                <input
-                    class="form-check-input"
-                    type="checkbox"
-                    name="pgto_adiantado"
-                />
-              <label class="form-check-label" for="pgto_adiantado" value="{{pgto_adiantado}}"> Pago adiantado </label>
+              <input
+                class="form-check-input"
+                type="checkbox"
+                name="pgto_adiantado"
+                {% if pgto_adiantado %}
+                  checked
+                {% endif %}
+              />
+              <label class="form-check-label" for="pgto_adiantado"> Pago </label>
             </div>
-        </div>
-        <div class="col-12">
+          </div>
+          <div class="col-12">
             <div class="form-check form-switch" id="is_active">
-                <input
-                    class="form-check-input "
-                    type="checkbox"
-                    name="os_finalizada"
-                />
-              <label class="form-check-label" for="os_finalizada" value="{{os_finalizada}}"> OS fechada </label>
+              <input
+                class="form-check-input "
+                type="checkbox"
+                name="os_finalizada"
+                {% if os_finalizada %}
+                  checked
+                {% endif %}
+              />
+              <label class="form-check-label" for="os_finalizada"> OS fechada </label>
             </div>
-        </div>
+          </div>
+          
         <div class="col-md-3">
-            <label for="total" class="form-label">data_alteracao</label>
+            <label for="total" class="form-label">Data da ultima alteração</label>
             <input
                 type="text"
                 class="form-control"

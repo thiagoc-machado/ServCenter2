@@ -17,7 +17,7 @@
     <div class="card bg-success text-white">
       <h5 class="fin-card-header">
         Entradas de Hoje
-        <h3 id="fin-subt2">R$ 0</h3>
+        <h3 id="fin-subt2">R$ {{finance_sum}}</h3>
       </h5>
     </div>
   </div>
@@ -25,37 +25,40 @@
     <div class="card bg-danger text-white">
       <h5 class="fin-card-header">
         Saídas de Hoje
-        <h3 id="fin-subt3">R$ 0</h3>
+        <h3 id="fin-subt3">R$ {{ finance_minus }}</h3>
+      </h5>
+    </div>
+  </div>
+  <div class="col-md-3 mb-3">
+    <div class="card bg-primary text-white">
+      <h5 class="fin-card-header">
+        Total de Hoje
+        <h3 id="fin-subt3">R$ {{ finance_total }}</h3>
       </h5>
     </div>
   </div>
 
   <div class="actions_bar">
-    <a href="{% url 'new_client' %}" id="btn_nc" type="button" class="btn btn-success">
+    <a
+      href="{% url 'new_client' %}"
+      id="btn_nc"
+      type="button"
+      class="btn btn-success"
+    >
       Entrada avulsa no caixa
     </a>
     <a id="btn_ac" type="button" class="btn btn-danger">
       Saída avulsa no caixa
     </a>
     <a id="btn_ac" type="button" class="btn btn-primary">
-        Exportar movimentação
-      </a>
-      <div>
-      <a id="btn_ac" type="button" class="btn btn-dark">
-        Diario
-      </a>
-      <a id="btn_ac" type="button" class="btn btn-dark">
-        Semanal
-      </a>
-      <a id="btn_ac" type="button" class="btn btn-dark">
-        Mensal
-      </a>
-      <a id="btn_ac" type="button" class="btn btn-dark">
-        Anual
-      </a>
-      <a id="btn_ac" type="button" class="btn btn-dark">
-        Total
-      </a>
+      Exportar movimentação
+    </a>
+    <div>
+      <a id="btn_ac" type="button" class="btn btn-dark"> Diario </a>
+      <a id="btn_ac" type="button" class="btn btn-dark"> Semanal </a>
+      <a id="btn_ac" type="button" class="btn btn-dark"> Mensal </a>
+      <a id="btn_ac" type="button" class="btn btn-dark"> Anual </a>
+      <a id="btn_ac" type="button" class="btn btn-dark"> Total </a>
     </div>
   </div>
   <div class="col-md-12 mb-3">
@@ -82,29 +85,25 @@
               </tr>
             </thead>
             <tbody>
-              {% for clients in cli %}
+              {% for finances in finance %}
               <tr>
-                <td>{{ clients.cod_cli }}</td>
-                <td>{{ clients.nome }}</td>
-                <td>{{ clients.telefone }}</td>
-                <td>{{ clients.whatsapp }}</td>
-                <td>{{ clients.data_cadastro }}</td>
-                <td
-                  {% if clients.ativo == True %}
-                    <span>Ativo</span>
-                  {% elif clients.ativo == False %}
-                    <span>Inativo</span>
-                  {% endif %}
-                </td>
+                <td>{{ finances.id }}</td>
+                <td>{{ finances.os }}</td>
+                <td>{{ finances.nome }}</td>
+                <td>{{ finances.valor }}</td>
+                <td>{{ finances.data }}</td>
+                <td>{{ finances.movimento }}</td>
                 <th>
-                  <a id="btn_ed" href="{% url 'edit_client' clients.cod_cli %}"  type="button" class="btn btn-success">
+                  <a id="btn_ed" href="" type="button" class="btn btn-success">
                     <i class="bi bi-pen"></i>
                   </a>
-                  <a href="{% url 'del_cli' clients.cod_cli %}" id="btn_ap" type="button" class="btn btn-danger delete">
+                  <a
+                    href=""
+                    id="btn_ap"
+                    type="button"
+                    class="btn btn-danger delete"
+                  >
                     <i class="bi bi-trash"></i>
-                  </a>
-                  <a href="https://api.whatsapp.com/send?phone=55{{clients.whatsapp}}&text=Ol%C3%A1, {{clients.nome}} tudo bem?" id="btn_wz" type="button" class="btn btn-success">
-                    <i class="bi bi-whatsapp"></i>
                   </a>
                 </th>
               </tr>

@@ -3,7 +3,7 @@ from PIL import Image
 from django.contrib.auth.models import User
 
 
-class client(models.Model):
+class client(models.Model): 
     cod_cli = models.AutoField(primary_key=True)
     tipo_cad = models.CharField(max_length=15, default="Pessoa Física")
     nome = models.CharField(max_length=50)

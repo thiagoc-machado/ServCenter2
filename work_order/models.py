@@ -19,7 +19,7 @@ class work_order(models.Model):
     produto = models.CharField(max_length=20, null=True, blank=True)
     marca = models.CharField(max_length=20, null=True, blank=True)
     modelo = models.CharField(max_length=20, null=True, blank=True)
-    serie = models.CharField(max_length=20, null=True, blank=True) 
+    serie = models.CharField(max_length=20, null=True, blank=True)
     condicao = models.CharField(max_length=50, null=True, blank=True)
     acessorios = models.CharField(max_length=50, null=True, blank=True)
     defeito = models.CharField(max_length=50, null=True, blank=True)
@@ -36,7 +36,7 @@ class work_order(models.Model):
     os_finalizada = models.BooleanField()
 
     def __str__(self):
-        return self.nome
+        return self.produto
 
 
 class image(models.Model):
