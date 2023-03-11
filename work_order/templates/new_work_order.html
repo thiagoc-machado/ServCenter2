@@ -25,8 +25,19 @@
     <div class="row g-6">
         <p class= "p-1 mb-2 bg-info text-white">Dados do cliente</p>
 
-        <div class="col-md-2">
-        <label for="cod_cli" class="form-label">Cod</label>
+        <div class="col-md-1">
+            <label for="cod_os" class="form-label">OS</label>
+            <input
+                type="number" readonly
+                class="form-control"
+                placeholder="Auto"
+                name="cod_os"
+                value="{{cod_os}}"
+            />
+        </div>
+
+        <div class="col-md-1">
+        <label for="cod_cli" class="form-label">Cod cliente</label>
         <input
             id="cod_cli"
             type="number" readonly
@@ -43,7 +54,7 @@
             <input list="list_clients" value="{{cliente}}" class="form-select" placeholder="Digite para buscar" name="cliente" onchange="getSelectedValue()"> 
             <datalist id="list_clients">
                 {% for clients in list_client %}
-                <option data-cod_cli="{{ clients.cod_cli }}" data-whatsapp="{{clients.whatsapp}}" value="{{clients.nome}}"> {{ clients.nome }}</option>
+                <option data-cod_cli ="{{ clients.cod_cli }}" data-whatsapp="{{clients.whatsapp}}" value="{{clients.nome}}"> {{ clients.nome }}</option>
                 {% endfor %}
             </datalist>
         </div>
@@ -213,7 +224,7 @@
         <div class="col-md-3">
             <label for="tecnico" class="form-label">tecnico resp.</label>
             <select name="cod_tecnico" class="form-select chosen" id="cod_tecnico" value="{{cod_tecnico}}">
-
+                <option></option>
                 {% for employee in list_employee %}
                 <option value = "{{employee.cod}}">{{ employee.nome}}</option>
                 {% endfor %}
@@ -224,7 +235,7 @@
         <div class="col-md-3">
             <label for="servico" class="form-label">Serviço</label>
             <select name="cod_ser" class="form-select chosen" id="cod_ser" value="{{service.nome}}">
-
+                <option></option>
                 {% for service in list_service %}
                 <option value = "{{service.cod}}">{{ service.nome}} - {{service.tipo }}</option>
                 {% endfor %}

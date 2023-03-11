@@ -25,8 +25,20 @@
     <div class="row g-6">
         <p class= "p-1 mb-2 bg-info text-white">Dados do cliente</p>
 
-        <div class="col-md-2">
-        <label for="cod_cli" class="form-label">Cod</label>
+        <div class="col-md-1">
+            <label for="cod_os" class="form-label"> OS</label>
+            <input
+                id="cod_cli"
+                type="number" readonly
+                class="form-control"
+                placeholder="Auto"
+                name="cod_os"
+                value="{{cod_os}}"
+            />
+        </div>
+
+        <div class="col-md-1">
+        <label for="cod_cli" class="form-label"> Cod</label>
         <input
             id="cod_cli"
             type="number" readonly
@@ -230,7 +242,7 @@
         <div class="col-md-3">
             <label for="servico" class="form-label">Serviço</label>
             <select name="cod_ser" class="form-select chosen" id="cod_ser" value="service.cod">
-                <option>{{servico}} - {{servico_tipo}}</option>
+                
                 {% for service in list_service %}
                 <option value = "{{service.cod}}">{{ service.nome}}  {{service.tipo }}</option>
                 {% endfor %}

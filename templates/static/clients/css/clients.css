@@ -32,6 +32,7 @@
   min-width: 60px;
 }
 
+
 @media (min-width: 992px) {
   .row {
     margin-left: 200px;

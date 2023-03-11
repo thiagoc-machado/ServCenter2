@@ -19,6 +19,20 @@
   margin-left: 80px;
 }
 
+.checkbox {
+  margin-top: 10px;
+  border: 1px solid rgb(249, 249, 249);
+  border-radius: 5px;
+  justify-content: center;
+  font-size: larger;
+  padding: 10px;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+.checkbox input {
+  background-color: rgb(163, 56, 56);
+}
 
 @media (min-width: 992px) {
   .main {
@@ -38,5 +52,5 @@
   }
   #some {
     display: none;
-    }
+  }
 }

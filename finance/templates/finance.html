@@ -56,7 +56,7 @@
       Saída avulsa no caixa
     </a>
     <a
-      href="{% url 'del_finance' %}"
+      href=""
       id="btn_ac"
       type="button"
       class="btn btn-primary"
@@ -86,7 +86,7 @@
             <thead>
               <tr>
                 <th>Cod.</th>
-                <th>OS</th>
+                <th>Obs</th>
                 <th>Nome</th>
                 <th>Valor</th>
                 <th>Data</th>
@@ -104,11 +104,11 @@
                 <td>{{ finances.data }}</td>
                 <td>{{ finances.movimento }}</td>
                 <th>
-                  <a id="btn_ed" href="" type="button" class="btn btn-success">
+                  <a id="btn_ed" href="{% url 'edit_finance' finances.id %}" type="button" class="btn btn-success">
                     <i class="bi bi-pen"></i>
                   </a>
                   <a
-                    href=""
+                    href="{% url 'del_finance' finances.id %}"
                     id="btn_ap"
                     type="button"
                     class="btn btn-danger delete"

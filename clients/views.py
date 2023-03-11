@@ -17,7 +17,6 @@ def clients(request):
         return HttpResponseBadRequest('Invalid request method')
 
 
-
 @login_required
 def new_client(request):
     if request.method == "GET":
@@ -46,7 +45,6 @@ def new_client(request):
         vendedor = User.objects.get(pk=request.POST.get("inputVend"))
         ativo = request.POST.get("gridCheck")
         foto = request.FILES.get("foto")
-
 
         if ativo == 'on':
             ativo = True
@@ -112,30 +110,31 @@ def del_cli(request, cod_cli):
 def edit_client(request, cod_cli):
     if request.method == 'GET':
 
-        return render(request, 'edit_client.html', {'cod_cli': client.objects.get(cod_cli=cod_cli).cod_cli,
-                                                    'nome': client.objects.get(cod_cli=cod_cli).nome,
-                                                    'rg': client.objects.get(cod_cli=cod_cli).rg,
-                                                    'cpf': client.objects.get(cod_cli=cod_cli).cpf,
-                                                    'data_nasc': client.objects.get(cod_cli=cod_cli).data_nasc.strftime("%Y-%m-%d"),
-                                                    'tipo_cad': client.objects.get(cod_cli=cod_cli).tipo_cad,
-                                                    'telefone': client.objects.get(cod_cli=cod_cli).telefone,
-                                                    'celular': client.objects.get(cod_cli=cod_cli).celular,
-                                                    'whatsapp': client.objects.get(cod_cli=cod_cli).whatsapp,
-                                                    'email': client.objects.get(cod_cli=cod_cli).email,
-                                                    'data_cadastro': client.objects.get(cod_cli=cod_cli).data_cadastro.strftime("%Y-%m-%d"),
-                                                    'foto': client.objects.get(cod_cli=cod_cli).foto,
-                                                    'rua': client.objects.get(cod_cli=cod_cli).rua,
-                                                    'numero': client.objects.get(cod_cli=cod_cli).numero,
-                                                    'compl': client.objects.get(cod_cli=cod_cli).compl,
-                                                    "bairro": client.objects.get(cod_cli=cod_cli).bairro,
-                                                    'cidade': client.objects.get(cod_cli=cod_cli).cidade,
-                                                    'uf': client.objects.get(cod_cli=cod_cli).uf,
-                                                    'cep': client.objects.get(cod_cli=cod_cli).cep,
-                                                    'tipo_end': client.objects.get(cod_cli=cod_cli).tipo_end,
-                                                    'vendedor': client.objects.get(cod_cli=cod_cli).vendedor,
-                                                    'ativo': client.objects.get(cod_cli=cod_cli).ativo,
-                                                    'users': User.objects.all()
-                                                    })
+        return render(request, 'edit_client.html', {
+            'cod_cli': client.objects.get(cod_cli=cod_cli).cod_cli,
+            'nome': client.objects.get(cod_cli=cod_cli).nome,
+            'rg': client.objects.get(cod_cli=cod_cli).rg,
+            'cpf': client.objects.get(cod_cli=cod_cli).cpf,
+            'data_nasc': client.objects.get(cod_cli=cod_cli).data_nasc.strftime("%Y-%m-%d"),
+            'tipo_cad': client.objects.get(cod_cli=cod_cli).tipo_cad,
+            'telefone': client.objects.get(cod_cli=cod_cli).telefone,
+            'celular': client.objects.get(cod_cli=cod_cli).celular,
+            'whatsapp': client.objects.get(cod_cli=cod_cli).whatsapp,
+            'email': client.objects.get(cod_cli=cod_cli).email,
+            'data_cadastro': client.objects.get(cod_cli=cod_cli).data_cadastro.strftime("%Y-%m-%d"),
+            'foto': client.objects.get(cod_cli=cod_cli).foto,
+            'rua': client.objects.get(cod_cli=cod_cli).rua,
+            'numero': client.objects.get(cod_cli=cod_cli).numero,
+            'compl': client.objects.get(cod_cli=cod_cli).compl,
+            "bairro": client.objects.get(cod_cli=cod_cli).bairro,
+            'cidade': client.objects.get(cod_cli=cod_cli).cidade,
+            'uf': client.objects.get(cod_cli=cod_cli).uf,
+            'cep': client.objects.get(cod_cli=cod_cli).cep,
+            'tipo_end': client.objects.get(cod_cli=cod_cli).tipo_end,
+            'vendedor': client.objects.get(cod_cli=cod_cli).vendedor,
+            'ativo': client.objects.get(cod_cli=cod_cli).ativo,
+            'users': User.objects.all()
+        })
 
     elif request.method == "POST":
         client_obj = client.objects.get(cod_cli=cod_cli)
@@ -172,11 +171,12 @@ def edit_client(request, cod_cli):
         if client_obj.nome == "":
             messages.add_message(request, constants.ERROR,
                                  'Verifique os dados inseridos')
-            return render(request, 'new_client.html', {'cod_cli': cod_cli, 'name': client_obj.nome, 'rg': client_obj.rg, 'cpf': client_obj.cpf, 'data_nasc': client_obj.data_nasc,
-                                                       'tipo_cad': client_obj.tipo_cad, 'telefone': client_obj.telefone, 'celular': client_obj.celular,
-                                                       'whatsapp': client_obj.whatsapp, 'email': client_obj.email, 'cpf': client_obj.cpf, 'data_cadastro': client_obj.data_cadastro,
-                                                       'foto': client_obj.foto, 'rua': client_obj.rua, 'numero': client_obj.numero, 'compl': client_obj.compl, 'bairro': client_obj.bairro,
-                                                       'cidade': client_obj.cidade, 'uf': client_obj.uf, 'cep': client_obj.cep, 'tipo_end': client_obj.tipo_end, 'vendedor': vendedor, 'ativo': client_obj.ativo})
+            return render(request, 'new_client.html', {
+                'cod_cli': cod_cli, 'name': client_obj.nome, 'rg': client_obj.rg, 'cpf': client_obj.cpf, 'data_nasc': client_obj.data_nasc,
+                'tipo_cad': client_obj.tipo_cad, 'telefone': client_obj.telefone, 'celular': client_obj.celular,
+                'whatsapp': client_obj.whatsapp, 'email': client_obj.email, 'cpf': client_obj.cpf, 'data_cadastro': client_obj.data_cadastro,
+                'foto': client_obj.foto, 'rua': client_obj.rua, 'numero': client_obj.numero, 'compl': client_obj.compl, 'bairro': client_obj.bairro,
+                'cidade': client_obj.cidade, 'uf': client_obj.uf, 'cep': client_obj.cep, 'tipo_end': client_obj.tipo_end, 'vendedor': vendedor, 'ativo': client_obj.ativo})
 
         else:
             client_obj.save()
