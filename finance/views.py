@@ -186,14 +186,14 @@ def new_finance(request):
         obs = request.POST.get("inputObs")
         nome = request.POST.get("inputNome")
         data = request.POST.get("inputData")
-        valor = request.POST.get("inputValor")
+        valor = round(float(request.POST.get("inputValor")), 2)
         movimento = 'entrada'
 
         finances = Finance(
             obs=obs,
             nome=nome,
             data=data,
-            valor=valor,
+            valor='R$ '+ str(valor),
             movimento=movimento,
         )
         finances.save()
@@ -212,14 +212,14 @@ def new_finance_out(request):
         obs = request.POST.get("inputObs")
         nome = request.POST.get("inputNome")
         data = request.POST.get("inputData")
-        valor = request.POST.get("inputValor")
+        valor = round(float(request.POST.get("inputValor")), 2)
         movimento = 'saida'
 
         finances = Finance(
             obs=obs,
             nome=nome,
             data=data,
-            valor=valor,
+            valor='R$ '+ str(valor),
             movimento=movimento,
         )
         finances.save()
