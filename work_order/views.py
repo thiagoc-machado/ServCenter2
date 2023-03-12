@@ -24,6 +24,16 @@ def new_work_order(request):
         list_client = client.objects.all()
         list_employee = Employees.objects.all()
         list_service = Services.objects.all()
+        list_client = client.objects.all()
+
+        try:
+            service = Services.objects.get(cod=id)
+        except:
+            service = ""
+        try:
+            tipo = Services.objects.get(cod=id).tipo
+        except:
+            tipo = ""
         hora = datetime.now().time()
         data = datetime.now().date().strftime("%Y-%m-%d")
         print(data)
@@ -37,11 +47,7 @@ def new_work_order(request):
 
     elif request.method == "POST":
 
-        list_client = client.objects.all()
-        list_employee = Employees.objects.all()
-        list_service = Services.objects.all()
-
-        if request.POST.get("pgto_adiantado") == None and request.POST.get("total") == "":
+        if request.POST.get("pgto_adiantado") == None:
             pgto_adiantado = False
         else:
             pgto_adiantado = True
@@ -49,130 +55,87 @@ def new_work_order(request):
             os_finalizada = False
         else:
             os_finalizada = True
-        print('*************************')
-        print(request.POST.get("cod_cli"))
-        print('*************************')
-        
-        if request.POST.get("cod_cli") == '':
-            print('*************************')
-            print('entrou')
-            print('*************************')
+
+        cod_cli_str = request.POST.get("cod_cli")
+
+        if not cod_cli_str:
+            # Se o cod_cli estiver vazio, cria um novo objeto 'client'
+            m = True
             nome = request.POST.get("cliente")
             whatsapp = request.POST.get("whatsapp")
-            ativo = True
-            vendedor = request.user
-            data_nasc = "1900-01-01"
-            data_cadastro = datetime.now().date().strftime("%Y-%m-%d")
-
-            Client = client(
+            client_obj, created = client.objects.get_or_create(
                 nome=nome,
                 whatsapp=whatsapp,
-                ativo=ativo,
-                vendedor=vendedor,
-                data_nasc=data_nasc,
-                data_cadastro=data_cadastro,
+                vendedor=request.user,
+                data_nasc="1900-01-01",
+                ativo=True,
             )
-            Client.save()
-
-            # return render(request, 'new_work_order.html', {
-            #     'list_client': list_client,
-            #     'list_employee': list_employee,
-            #     'list_service': list_service,
-            #     'cliente': request.POST.get("cliente"),
-            #     'cod_cli': request.POST.get("cod_cli"),
-            #     'cod_tecnico': request.POST.get("cod_tecnico"),
-            #     'cod_ser': request.POST.get("cod_ser"),
-            #     'cod_user': request.POST.get("cod_user"),
-            #     'whatsapp': request.POST.get("whatsapp"),
-            #     'status': request.POST.get("status"),
-            #     'obs_cli': request.POST.get("obs_cli"),
-            #     'produto': request.POST.get("produto"),
-            #     'marca': request.POST.get("marca"),
-            #     'modelo': request.POST.get("modelo"),
-            #     'serie': request.POST.get("serie"),
-            #     'condicao': request.POST.get("condicao"),
-            #     'acessorios': request.POST.get("acessorios"),
-            #     'defeito': request.POST.get("defeito"),
-            #     'obs_ser': request.POST.get("obs_ser"),
-            #     'solucao': request.POST.get("solucao"),
-            #     'preco': request.POST.get("preco"),
-            #     'desconto': request.POST.get("desconto"),
-            #     'acressimo': request.POST.get("acressimo"),
-            #     'total': request.POST.get("total"),
-            #     'modo_pgto': request.POST.get("modo_pgto"),
-            #     'pgto_adiantado': request.POST.get("pgto_adiantado"),
-            #     'os_finalizada': request.POST.get("os_finalizada"),
-            #     'condicao': request.POST.get("condicao"),
-            #     'hora': datetime.now().time(),
-            #     'data': datetime.now().date().strftime("%Y-%m-%d"),
-            # })
-            print(nome)
-        
-            cod_cli = client.objects.get(nome=nome).cod_cli,
-            cod_tec=vendedor,
-            cod_ser=Services.objects.get(("cod_ser")),
         else:
-            cod_cli=client.objects.get(pk=request.POST.get("cod_cli")),
-            cod_tec=Employees.objects.get(pk=request.POST.get("cod_tecnico")),
-            cod_ser=Services.objects.get(pk=request.POST.get("cod_ser")),
+            m = False
+            client_obj = client.objects.get(pk=cod_cli_str)
 
-        print(cod_cli, cod_tec, cod_ser)
-        
-        work_orders = work_order_model(
-            # Services.objects.get(cod=id)
-            cod_cli=cod_cli,
-            cod_tec=cod_tec,
-            cod_ser=cod_ser,
-            cod_user=request.user,
-            whatsapp=request.POST.get("whatsapp"),
-            status=request.POST.get("status"),
-            obs_cli=request.POST.get("obs_cli"),
-            produto=request.POST.get("produto"),
-            marca=request.POST.get("marca"),
-            modelo=request.POST.get("modelo"),
-            serie=request.POST.get("serie"),
-            condicao=request.POST.get("condicao"),
-            acessorios=request.POST.get("acessorios"),
-            defeito=request.POST.get("defeito"),
-            obs_ser=request.POST.get("obs_ser"),
-            solucao=request.POST.get("solucao"),
-            preco=request.POST.get("preco"),
-            desconto=request.POST.get("desconto"),
-            acressimo=request.POST.get("acressimo"),
-            total=request.POST.get("total"),
-            modo_pgto=request.POST.get("modo_pgto"),
-            data_alteracao=datetime.now().date().strftime("%Y-%m-%d"),
-            pgto_adiantado=pgto_adiantado,
-            os_finalizada=os_finalizada,
-        )
-
+            work_orders = work_order_model(
+                # Services.objects.get(cod=id)
+                cod_cli=client_obj,
+                cod_tec=Employees.objects.get(
+                    pk=request.POST.get("cod_tecnico")),
+                cod_ser=Services.objects.get(pk=request.POST.get("cod_ser")),
+                cod_user=request.user,
+                whatsapp=request.POST.get("whatsapp"),
+                status=request.POST.get("status"),
+                obs_cli=request.POST.get("obs_cli"),
+                produto=request.POST.get("produto"),
+                marca=request.POST.get("marca"),
+                modelo=request.POST.get("modelo"),
+                serie=request.POST.get("serie"),
+                condicao=request.POST.get("condicao"),
+                acessorios=request.POST.get("acessorios"),
+                defeito=request.POST.get("defeito"),
+                obs_ser=request.POST.get("obs_ser"),
+                solucao=request.POST.get("solucao"),
+                preco=request.POST.get("preco"),
+                desconto=request.POST.get("desconto"),
+                acressimo=request.POST.get("acressimo"),
+                total=request.POST.get("total"),
+                modo_pgto=request.POST.get("modo_pgto"),
+                data_alteracao=datetime.now().date().strftime("%Y-%m-%d"),
+                pgto_adiantado=pgto_adiantado,
+                os_finalizada=os_finalizada,
+            )
         # if not client.objects.filter(pk=request.POST.get("cod_cli")).exists():
-        work_orders.save()
+            work_orders.save()
+            if pgto_adiantado == True and request.POST.get("total") != '':
 
-        if pgto_adiantado == True and request.POST.get("total") != '':
+                finances = Finance.objects.all()
 
-            finances = Finance.objects.all()
+                obs = 'Pagamento adiantado da OS: ' + str(work_orders)
+                nome = client.objects.get(pk=request.POST.get("cod_cli")).nome
+                data = datetime.now().date().strftime("%Y-%m-%d")
+                valor = request.POST.get("total")
+                movimento = 'entrada'
 
-            obs = 'Pagamento adiantado da OS: ' + str(work_orders)  # .cod
-            nome = client.objects.get(pk=request.POST.get("cod_cli")).nome
-            data = datetime.now().date().strftime("%Y-%m-%d")
-            valor = request.POST.get("total")
-            movimento = 'entrada'
+                finances = Finance(
+                    obs=obs,
+                    nome=nome,
+                    data=data,
+                    valor=valor,
+                    movimento=movimento,
+                )
+                finances.save()
 
-            finances = Finance(
-                obs=obs,
-                nome=nome,
-                data=data,
-                valor=valor,
-                movimento=movimento,
-            )
-            finances.save()
-
-            messages.add_message(request, constants.SUCCESS,
-                                 'Nova ordem se serviço cadastrado com sucesso e pagamento lançado no financeiro')
-        else:
-            messages.add_message(request, constants.SUCCESS,
-                                 'Nova ordem se serviço cadastrado com sucesso')
+                if m == True:
+                    messages.add_message(request, constants.SUCCESS,
+                                         'Nova ordem de serviço criada, novo cliente cadastrado com sucesso e pagamento lançado no financeiro')
+                else:
+                    messages.add_message(request, constants.SUCCESS,
+                                         'Nova ordem de serviço criada com sucesso e pagamento lançado no financeiro')
+            else:
+                if m == True:
+                    messages.add_message(request, constants.SUCCESS,
+                                         'Nova ordem de serviço criada e novo cliente cadastrado com sucesso')
+                else:
+                    messages.add_message(request, constants.SUCCESS,
+                                         'Nova ordem de serviço criada com sucesso')
 
         return redirect('work_order')
     else:
@@ -238,13 +201,6 @@ def edit_work_order(request, id):
 
     if request.method == "POST":
 
-        print("cod_cli")
-        print(request.POST.get("cod_cli"))
-        print("cod_tecnico")
-        print(request.POST.get("cod_tecnico"))
-        print("cod_ser")
-        print(request.POST.get("cod_ser"))
-
         pago = work_order_model.objects.get(id=id).pgto_adiantado
 
         work_orders = work_order_model.objects.get(id=id)
@@ -255,8 +211,7 @@ def edit_work_order(request, id):
             pk=request.POST.get("cod_tecnico"))
         work_orders.cod_ser = Services.objects.get(
             pk=request.POST.get("cod_ser"))
-        # work_orders.cod_ser = Services.objects.get(cod=id)
-        # work_orders.cod_ser = Services.objects.get(pk=request.POST.get("cod_ser")),
+
         work_orders.cod_user = request.user
         work_orders.whatsapp = request.POST.get("whatsapp")
         work_orders.status = request.POST.get("status")
