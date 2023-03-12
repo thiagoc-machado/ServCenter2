@@ -4,7 +4,7 @@
 {% endblock %} {% block 'main' %}
 <div class="row">
   <div id="cad_cli_tit">
-    <a>Financeiro</a>
+    <a>Financeiro - Resumo diário</a>
   </div>
 
   {% if messages %}
@@ -16,7 +16,7 @@
   <div class="col-md-3 mb-3">
     <div class="card bg-success text-white">
       <h5 class="fin-card-header">
-        Entradas Totais
+        Entradas de Hoje
         <h3 id="fin-subt2">R$ {{finance_sum}}</h3>
       </h5>
     </div>
@@ -24,7 +24,7 @@
   <div class="col-md-3 mb-3">
     <div class="card bg-danger text-white">
       <h5 class="fin-card-header">
-        Saídas Totais
+        Saídas de Hoje
         <h3 id="fin-subt3">R$ {{ finance_minus }}</h3>
       </h5>
     </div>
@@ -32,7 +32,7 @@
   <div class="col-md-3 mb-3">
     <div class="card bg-primary text-white">
       <h5 class="fin-card-header">
-        Total desde {{finance_date}}
+        Total de Hoje
         <h3 id="fin-subt3">R$ {{ finance_total }}</h3>
       </h5>
     </div>
@@ -64,11 +64,11 @@
       Exportar movimentação
     </a>
     <div>
-      <a href="{% url 'finance_dia' %}" id="btn_ac" type="button" class="btn btn-dark"> Diario </a>
+      <a href="{% url 'finance_dia' %}" id="btn_ac" type="button" class="btn btn-light"> Diario </a>
       <a href="{% url 'finance_sem' %}" id="btn_ac" type="button" class="btn btn-dark"> Semanal </a>
       <a href="{% url 'finance_mes' %}" id="btn_ac" type="button" class="btn btn-dark"> Mensal </a>
       <a href="{% url 'finance_ano' %}" id="btn_ac" type="button" class="btn btn-dark"> Anual </a>
-      <a href="{% url 'finance_tot' %}" id="btn_ac" type="button" class="btn btn-light"> Total </a>
+      <a href="{% url 'finance_tot' %}" id="btn_ac" type="button" class="btn btn-dark"> Total </a>
     </div>
   </div>
   <div class="col-md-12 mb-3">

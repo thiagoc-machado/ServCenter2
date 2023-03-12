@@ -39,12 +39,7 @@ def new_employees(request):
         uf = request.POST.get("inputUf")
         cep = request.POST.get("inputCep")
         tipo_end = request.POST.get("inputTipoEnd")
-        ativo = request.POST.get("gridCheck")
-
-        if ativo == 'on':
-            ativo = True
-        else:
-            ativo = False
+        ativo = True
 
         if data_nasc == "":
             data_nasc = "1900-01-01"
@@ -167,7 +162,7 @@ def edit_employees(request, cod):
 
 @ login_required
 def del_employees(request, cod):
-    emp = employees.objects.get(cod=cod)
+    emp = Employees.objects.get(cod=cod)
     emp.delete()
     messages.add_message(request, constants.SUCCESS,
                          'Employeese apagado com sucesso')

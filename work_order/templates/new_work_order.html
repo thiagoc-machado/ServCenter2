@@ -224,7 +224,6 @@
         <div class="col-md-3">
             <label for="tecnico" class="form-label">tecnico resp.</label>
             <select name="cod_tecnico" class="form-select chosen" id="cod_tecnico" value="{{cod_tecnico}}">
-                <option></option>
                 {% for employee in list_employee %}
                 <option value = "{{employee.cod}}">{{ employee.nome}}</option>
                 {% endfor %}
@@ -235,7 +234,6 @@
         <div class="col-md-3">
             <label for="servico" class="form-label">Serviço</label>
             <select name="cod_ser" class="form-select chosen" id="cod_ser" value="{{service.nome}}">
-                <option></option>
                 {% for service in list_service %}
                 <option value = "{{service.cod}}">{{ service.nome}} - {{service.tipo }}</option>
                 {% endfor %}
