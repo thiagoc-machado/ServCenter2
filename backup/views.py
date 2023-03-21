@@ -8,7 +8,6 @@ from django.db import connection
 import time
 from django.contrib import messages
 from django.contrib.messages import constants
-import subprocess
 from django.core import management
 from io import StringIO
 
