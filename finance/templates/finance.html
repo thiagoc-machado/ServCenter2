@@ -96,13 +96,13 @@
             </thead>
             <tbody>
               {% for finances in finance %}
-              <tr>
-                <td>{{ finances.id }}</td>
-                <td>{{ finances.os }}</td>
-                <td>{{ finances.nome }}</td>
-                <td>{{ finances.valor }}</td>
-                <td>{{ finances.data }}</td>
-                <td>{{ finances.movimento }}</td>
+              <tr id="fin_table">
+                <th><a href="{% url 'edit_finance' finances.id %}">{{ finances.id }}</a></th>
+                <th><a href="{% url 'edit_finance' finances.id %}">{{ finances.os }}</a></th>
+                <th><a href="{% url 'edit_finance' finances.id %}">{{ finances.nome }}</a></th>
+                <th><a href="{% url 'edit_finance' finances.id %}">{{ finances.valor }}</a></th>
+                <th><a href="{% url 'edit_finance' finances.id %}">{{ finances.data }}</a></th>
+                <th><a href="{% url 'edit_finance' finances.id %}">{{ finances.movimento }}</a></th>
                 <th>
                   <a id="btn_ed" href="{% url 'edit_finance' finances.id %}" type="button" class="btn btn-success">
                     <i class="bi bi-pen"></i>

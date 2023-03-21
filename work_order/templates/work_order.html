@@ -49,14 +49,14 @@
             </thead>
             <tbody>
               {% for orders in workorders %}
-              <tr>
+              <tr id="wo_table">
                 <td>{{ orders.id }}</td>
-                <td>{{ orders.cod_cli }}</td>
-                <td>{{ orders.cod_prod }}</td>
-                <td>{{ orders.data_entrada }}</td>
-                <td>{{ orders.data_saida }}</td>
-                <td>{{ orders.total }}</td>
-                <td>{{ orders.status }}</td>
+                <td><a  href="{% url 'edit_work_order' orders.id %}">{{ orders.cod_cli }}</a></td>
+                <td><a href="{% url 'edit_work_order' orders.id %}">{{ orders.cod_prod }}</a></td>
+                <td><a href="{% url 'edit_work_order' orders.id %}">{{ orders.data_entrada }}</a></td>
+                <td><a href="{% url 'edit_work_order' orders.id %}">{{ orders.data_saida }}</a></td>
+                <td><a href="{% url 'edit_work_order' orders.id %}">{{ orders.total }}</a></td>
+                <td><a href="{% url 'edit_work_order' orders.id %}">{{ orders.status }}</a></td>
                  <td
                   {% if orders.pgto_adiantado == True %}
                   <span id = "op1">pago</span>
