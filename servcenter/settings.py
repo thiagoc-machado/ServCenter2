@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'corsheaders',
+    'dbbackup',
 
     'login',
     'dashboard',
@@ -51,7 +52,7 @@ INSTALLED_APPS = [
     'services',
     'work_order',
     'finance',
-
+    'backup',
 ]
 
 MIDDLEWARE = [
@@ -96,6 +97,20 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'djongo',
+#         'NAME': 'servcenter',
+#         'CLIENT': {
+#             'host': 'mongodb+srv://thiago:140106@servcenter.r2vahls.mongodb.net',
+#             'username': 'thiago',
+#             'password': '140106',
+#             'authSource': 'servcenter',
+#             'retryWrites': True,
+#             'w': 'majority'
+#         },
+#     }
+# }
 
 
 # Password validation
@@ -161,3 +176,29 @@ LOGOUT_URL = '/sair'
 LOGIN_REDIRECT_URL = '/dashboard'
 
 CORS_ORIGIN_WHITELIST = []
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+DBBACKUP_STORAGE = 'django.core.files.storage.FileSystemStorage'
+DBBACKUP_STORAGE_OPTIONS = {'location': os.path.join(MEDIA_ROOT, 'backup')}
+DBBACKUP_DIRECTORY = os.path.join(MEDIA_ROOT, 'backup')
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+        'file': {
+            'class': 'logging.FileHandler',
+            'filename': 'd:/backups/django.log',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console', 'file'],
+            'level': 'INFO',
+        },
+    },
+}
