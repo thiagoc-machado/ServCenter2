@@ -7,6 +7,7 @@
   margin-top: 0px;
   font-size: 2vh;
   font-weight: 500;
+  margin-left: 10px;
 }
 #btn_nc,
 #btn_ac {
@@ -32,6 +33,16 @@
   min-width: 60px;
 }
 
+.bk_border{
+  border: 1px solid #ffffff;
+  border-radius: 5px;
+  padding: 5px;
+  margin: 5px;
+  background-color: rgb(195, 227, 255);
+}
+.bk_border form{
+padding: 1%;
+}
 
 @media (min-width: 992px) {
   .row {

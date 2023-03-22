@@ -26,18 +26,7 @@
     <br/>
   </div>
 
-  <div class="col-sm-12">
-    <form method="post" enctype="multipart/form-data" action="{% url 'restore' %}">
-      {% csrf_token %}
-      <div class="form-group">
-        <label for="backup_file">Selecione o arquivo de backup:</label>
-        <input type="file" class="form-control" id="backup_file" name="backup_file" required>
-      </div>
-      <br/>
-      <button type="submit" class="btn btn-primary">Restaurar Backup</button>
-    </form>
-  </div>
-  <div class="col-sm-12">
+  <div class="col-sm-12 bk_border">
     <form method="post" enctype="multipart/form-data" action="{% url 'restore' %}">
       {% csrf_token %}
       <div class="form-group">
