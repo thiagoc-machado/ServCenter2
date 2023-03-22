@@ -36,10 +36,10 @@
                 </div>
               </a>
             </li>
-            <li class="my-4"><hr class="dropdown-divider bg-light" /></li>
+
             <li>
               <div class="text-muted small fw-bold text-uppercase px-3 mb-3">
-                Atalhos
+                Acesso rápido
               </div>
             </li>
 
@@ -106,6 +106,12 @@
               </a>
             </li>
             <li>
+              <a href="{% url 'documents' %}" class="nav-link px-3">
+                <span class="me-2"><i class="bi bi-gear"></i></span>
+                <span>Documentos</span>
+              </a>
+            </li>
+            <li>
               <a
                 class="nav-link px-3 sidebar-link"
                 data-bs-toggle="collapse"
@@ -138,11 +144,19 @@
                     </a>
                   </li>
                   <li>
+                    <a href="{% url 'config' %}" class="nav-link px-3">
+                      <span class="me-2"
+                        ><i class="bi bi-speedometer2"></i
+                      ></span>
+                      <span>Empresa</span>
+                    </a>
+                  </li>
+                  <li>
                     <a href="{% url 'backup' %}" class="nav-link px-3">
                       <span class="me-2"
                         ><i class="bi bi-speedometer2"></i
                       ></span>
-                      <span>Backup do sistema</span>
+                      <span>Backup</span>
                     </a>
                   </li>
                   
@@ -151,7 +165,7 @@
                       <span class="me-2"
                         ><i class="bi bi-speedometer2"></i
                       ></span>
-                      <span>Área adiministrativa</span>
+                      <span>Admin</span>
                     </a>
                   </li>
                 </ul>
