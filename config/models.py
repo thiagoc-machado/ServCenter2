@@ -1,4 +1,6 @@
+import os
 from django.db import models
+from django.dispatch import receiver
 
 class Config(models.Model):
     nome_empresa = models.CharField(max_length=100, blank=True, null=True)
@@ -18,4 +20,13 @@ class Config(models.Model):
     data = models.DateField(blank=True, null=True)
     
     def __str__(self):
-        return self.nome_empresa    
+        return self.nome_empresa
+
+@receiver(models.signals.pre_delete, sender=Config)
+def remover_arquivo_de_imagem(sender, instance, **kwargs):
+    if instance.logo1:
+        if os.path.isfile(instance.logo1.path):
+            os.remove(instance.logo1.path)
+    if instance.logo2:
+        if os.path.isfile(instance.logo2.path):
+            os.remove(instance.logo2.path)

@@ -26,13 +26,13 @@
           <ul class="navbar-nav">
             <li>
               <div class="text-muted small fw-bold text-uppercase px-3">
-                <a href="{% url 'dashboard' %}"><img  id="logo" src="{{ config.logo1 }}" alt="" srcset="" /></a>
+                <a href="{% url 'dashboard' %}"><img  id="logo" src="{% static 'images/logo2.png'  %}" alt="" srcset="" /></a>
               </div>
             </li>
             <li id="tit_motores">
               <a href="{% url 'dashboard' %}" class="nav-link px-3 active">
                 <div class="text-muted small fw-bold text-uppercase px-3 mb-3">
-                  Recondicionamento de motores
+                  {{logo.atividade}}
                 </div>
               </a>
             </li>
