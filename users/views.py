@@ -5,9 +5,9 @@ from django.contrib import messages
 from django.contrib.messages import constants
 from django.contrib.auth.models import User
 from django.contrib.auth.models import Group
+from django.contrib.auth.decorators import user_passes_test
 
-
-@login_required
+@user_passes_test(lambda u: u.is_superuser)
 def users(request):
     if request.method == "GET":
         users = User.objects.all()
@@ -15,7 +15,7 @@ def users(request):
         return render(request, 'users.html', {'users': users, groups:'groups'})
 
 
-@login_required
+@user_passes_test(lambda u: u.is_superuser)
 def new_users(request):
     if request.method == "GET":
         users = User.objects.all()
@@ -86,7 +86,7 @@ def new_users(request):
             return redirect('users')
 
 
-@login_required
+@user_passes_test(lambda u: u.is_superuser)
 def edit_users(request, id):
 
     if request.method == "GET":
@@ -156,7 +156,7 @@ def edit_users(request, id):
             return redirect('users')
 
 
-@ login_required
+@user_passes_test(lambda u: u.is_superuser)
 def del_users(request, id):
     
     if request.user.is_superuser == False:

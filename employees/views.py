@@ -4,9 +4,10 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.messages import constants
 from .models import Employees
+from django.contrib.auth.decorators import user_passes_test
 
 
-@login_required
+@user_passes_test(lambda u: u.is_superuser)
 def employees(request):
     if request.method == "GET":
         emp = Employees.objects.all()
@@ -14,7 +15,7 @@ def employees(request):
         return render(request, 'employees.html', {'emp': emp})
 
 
-@login_required
+@user_passes_test(lambda u: u.is_superuser)
 def new_employees(request):
     if request.method == "GET":
         return render(request, 'new_employees.html')
@@ -84,7 +85,7 @@ def new_employees(request):
             return redirect('employees')
 
 
-@login_required
+@user_passes_test(lambda u: u.is_superuser)
 def edit_employees(request, cod):
 
     if request.method == "GET":
@@ -160,7 +161,7 @@ def edit_employees(request, cod):
             return redirect('employees')
 
 
-@ login_required
+@user_passes_test(lambda u: u.is_superuser)
 def del_employees(request, cod):
     emp = Employees.objects.get(cod=cod)
     emp.delete()

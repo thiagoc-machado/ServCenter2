@@ -7,96 +7,111 @@ from finance.models import Finance
 from django.db.models import Sum
 from django.utils import timezone
 from datetime import date, datetime, timedelta
+from django.contrib.auth.decorators import user_passes_test
+from django.contrib.auth.decorators import login_required
 
+
+@user_passes_test(lambda u: u.is_superuser)
 def finance(request):
     finance = Finance.objects.all()
     finance_date = Finance.objects.all().order_by('data').first()
     if finance_date is not None:
         finance_date = finance_date.data
-    
+
     finance_sum = 0
     finance_min = 0
     for finances in Finance.objects.all():
         if finances.movimento == 'entrada':
             valor = finances.valor
             if valor is not None:
-                valor = float(valor.replace('R$', '').replace('.', '').replace(',', '.'))
+                valor = float(valor.replace('R$', '').replace(
+                    '.', '').replace(',', '.'))
                 finance_sum += valor
-        elif  finances.movimento == 'saida':
+        elif finances.movimento == 'saida':
             valor = finances.valor
             if valor is not None:
-                valor = float(valor.replace('R$', '').replace('.', '').replace(',', '.'))
+                valor = float(valor.replace('R$', '').replace(
+                    '.', '').replace(',', '.'))
                 finance_min -= valor
-    finance_minus = finance_min * -1   
+    finance_minus = finance_min * -1
     finance_total = finance_sum - finance_minus
     finance_date = ''
     latest_finance = Finance.objects.all().order_by('data').last()
     if latest_finance:
         finance_date = latest_finance.data.strftime('%d/%m/%Y')
-    
+
     return render(request, 'finance.html', {'finance': finance,
                                             'finance_sum': finance_sum,
                                             'finance_minus': finance_minus,
                                             'finance_total': finance_total,
                                             'finance_date': finance_date
                                             })
-    
+
+
+@login_required
 def finance_dia(request):
     today = date.today()
     finance = Finance.objects.filter(data=today)
-    
+
     finance_sum = 0
     finance_min = 0
     for finances in Finance.objects.filter(data=today):
         if finances.movimento == 'entrada':
             valor = finances.valor
             if valor is not None:
-                valor = float(valor.replace('R$', '').replace('.', '').replace(',', '.'))
+                valor = float(valor.replace('R$', '').replace(
+                    '.', '').replace(',', '.'))
                 finance_sum += valor
-        elif  finances.movimento == 'saida':
+        elif finances.movimento == 'saida':
             valor = finances.valor
             if valor is not None:
-                valor = float(valor.replace('R$', '').replace('.', '').replace(',', '.'))
+                valor = float(valor.replace('R$', '').replace(
+                    '.', '').replace(',', '.'))
                 finance_min -= valor
-                
-    finance_minus = finance_min * -1   
+
+    finance_minus = finance_min * -1
     finance_total = finance_sum - finance_minus
-    
+
     return render(request, 'finance_dia.html', {'finance': finance,
-                                            'finance_sum': finance_sum,
-                                            'finance_minus': finance_minus,
-                                            'finance_total': finance_total,
-                                            })
+                                                'finance_sum': finance_sum,
+                                                'finance_minus': finance_minus,
+                                                'finance_total': finance_total,
+                                                })
 
 
+@user_passes_test(lambda u: u.is_superuser)
 def finance_sem(request):
     today = datetime.now().date()
     start_of_week = today - timedelta(days=today.weekday())
 
     finance = Finance.objects.filter(data__gte=start_of_week)
-    
+
     finance_sum = 0
     finance_min = 0
     for finances in Finance.objects.filter(data__gte=start_of_week):
         if finances.movimento == 'entrada':
             valor = finances.valor
             if valor is not None:
-                valor = float(valor.replace('R$', '').replace('.', '').replace(',', '.'))
+                valor = float(valor.replace('R$', '').replace(
+                    '.', '').replace(',', '.'))
                 finance_sum += valor
-        elif  finances.movimento == 'saida':
+        elif finances.movimento == 'saida':
             valor = finances.valor
             if valor is not None:
-                valor = float(valor.replace('R$', '').replace('.', '').replace(',', '.'))
+                valor = float(valor.replace('R$', '').replace(
+                    '.', '').replace(',', '.'))
                 finance_min -= valor
-    finance_minus = finance_min * -1   
+    finance_minus = finance_min * -1
     finance_total = finance_sum - finance_minus
-    
+
     return render(request, 'finance_sem.html', {'finance': finance,
-                                            'finance_sum': finance_sum,
-                                            'finance_minus': finance_minus,
-                                            'finance_total': finance_total,
-                                            })
-    
+                                                'finance_sum': finance_sum,
+                                                'finance_minus': finance_minus,
+                                                'finance_total': finance_total,
+                                                })
+
+
+@user_passes_test(lambda u: u.is_superuser)
 def finance_mes(request):
     today = date.today()
     start_of_month = today.replace(day=1)
@@ -109,73 +124,83 @@ def finance_mes(request):
         if finances.movimento == 'entrada':
             valor = finances.valor
             if valor is not None:
-                valor = float(valor.replace('R$', '').replace('.', '').replace(',', '.'))
+                valor = float(valor.replace('R$', '').replace(
+                    '.', '').replace(',', '.'))
                 finance_sum += valor
-        elif  finances.movimento == 'saida':
+        elif finances.movimento == 'saida':
             valor = finances.valor
             if valor is not None:
-                valor = float(valor.replace('R$', '').replace('.', '').replace(',', '.'))
+                valor = float(valor.replace('R$', '').replace(
+                    '.', '').replace(',', '.'))
                 finance_min -= valor
-    finance_minus = finance_min * -1   
+    finance_minus = finance_min * -1
     finance_total = finance_sum - finance_minus
-    
+
     return render(request, 'finance_mes.html', {'finance': finance,
-                                            'finance_sum': finance_sum,
-                                            'finance_minus': finance_minus,
-                                            'finance_total': finance_total,
-                                            })
-    
+                                                'finance_sum': finance_sum,
+                                                'finance_minus': finance_minus,
+                                                'finance_total': finance_total,
+                                                })
+
+
+@user_passes_test(lambda u: u.is_superuser)
 def finance_ano(request):
     year = date.today().year
     finance = Finance.objects.filter(data__year=year)
-    
+
     finance_sum = 0
     finance_min = 0
     for finances in Finance.objects.filter(data__year=year):
         if finances.movimento == 'entrada':
             valor = finances.valor
             if valor is not None:
-                valor = float(valor.replace('R$', '').replace('.', '').replace(',', '.'))
+                valor = float(valor.replace('R$', '').replace(
+                    '.', '').replace(',', '.'))
                 finance_sum += valor
-        elif  finances.movimento == 'saida':
+        elif finances.movimento == 'saida':
             valor = finances.valor
             if valor is not None:
-                valor = float(valor.replace('R$', '').replace('.', '').replace(',', '.'))
+                valor = float(valor.replace('R$', '').replace(
+                    '.', '').replace(',', '.'))
                 finance_min -= valor
-    finance_minus = finance_min * -1   
+    finance_minus = finance_min * -1
     finance_total = finance_sum - finance_minus
-    
+
     return render(request, 'finance_ano.html', {'finance': finance,
-                                            'finance_sum': finance_sum,
-                                            'finance_minus': finance_minus,
-                                            'finance_total': finance_total,
-                                            })
-    
+                                                'finance_sum': finance_sum,
+                                                'finance_minus': finance_minus,
+                                                'finance_total': finance_total,
+                                                })
+
+@user_passes_test(lambda u: u.is_superuser)
 def finance_tot(request):
     finance = Finance.objects.all()
-    
+
     finance_sum = 0
     finance_min = 0
     for finances in Finance.objects.all():
         if finances.movimento == 'entrada':
             valor = finances.valor
             if valor is not None:
-                valor = float(valor.replace('R$', '').replace('.', '').replace(',', '.'))
+                valor = float(valor.replace('R$', '').replace(
+                    '.', '').replace(',', '.'))
                 finance_sum += valor
-        elif  finances.movimento == 'saida':
+        elif finances.movimento == 'saida':
             valor = finances.valor
             if valor is not None:
-                valor = float(valor.replace('R$', '').replace('.', '').replace(',', '.'))
+                valor = float(valor.replace('R$', '').replace(
+                    '.', '').replace(',', '.'))
                 finance_min -= valor
-    finance_minus = finance_min * -1   
+    finance_minus = finance_min * -1
     finance_total = finance_sum - finance_minus
-    
-    return render(request, 'finance_tot.html', {'finance': finance,
-                                            'finance_sum': finance_sum,
-                                            'finance_minus': finance_minus,
-                                            'finance_total': finance_total,
-                                            })
 
+    return render(request, 'finance_tot.html', {'finance': finance,
+                                                'finance_sum': finance_sum,
+                                                'finance_minus': finance_minus,
+                                                'finance_total': finance_total,
+                                                })
+
+@login_required
 def new_finance(request):
     if request.method == "GET":
         data = date.today().strftime('%Y-%m-%d')
@@ -193,7 +218,7 @@ def new_finance(request):
             obs=obs,
             nome=nome,
             data=data,
-            valor='R$ '+ str(valor),
+            valor='R$ ' + str(valor),
             movimento=movimento,
         )
         finances.save()
@@ -201,7 +226,7 @@ def new_finance(request):
                              'Nova entrada cadastrada com sucesso')
     return redirect('finance')
 
-
+@login_required
 def new_finance_out(request):
     if request.method == "GET":
         data = date.today().strftime('%Y-%m-%d')
@@ -219,7 +244,7 @@ def new_finance_out(request):
             obs=obs,
             nome=nome,
             data=data,
-            valor='R$ '+ str(valor),
+            valor='R$ ' + str(valor),
             movimento=movimento,
         )
         finances.save()
@@ -227,12 +252,12 @@ def new_finance_out(request):
                              'Nova saída cadastrada com sucesso')
     return redirect('finance')
 
-
+@login_required
 def edit_finance(request, id):
 
     if request.method == 'GET':
         return render(request, 'edit_finance.html', {
-            'id': Finance.objects.get(id=id).id, 
+            'id': Finance.objects.get(id=id).id,
             'obs': Finance.objects.get(id=id).obs,
             'nome': Finance.objects.get(id=id).nome,
             'data': Finance.objects.get(id=id).data.strftime('%Y-%m-%d'),
@@ -247,7 +272,7 @@ def edit_finance(request, id):
         finances.data = request.POST.get("inputData")
         finances.valor = request.POST.get("inputValor")
         finances.movimento = request.POST.get("in_out")
-        
+
         if finances.movimento == 'on':
             finances.movimento = "Entrada"
         else:
@@ -255,12 +280,12 @@ def edit_finance(request, id):
 
         finances.save()
         messages.add_message(request, constants.SUCCESS,
-                                 'Entrada avulsa atualizada com sucesso')
+                             'Entrada avulsa atualizada com sucesso')
         return redirect('finance')
     else:
         return HttpResponseBadRequest('Invalid request method')
 
-
+@user_passes_test(lambda u: u.is_superuser)
 def del_finance(request, id):
     finances = Finance.objects.get(id=id)
     finances.delete()
