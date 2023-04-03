@@ -1,9 +1,8 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseBadRequest
-from datetime import date
+from datetime import date, time
 from finance.models import Finance
-from datetime import time
 
 @login_required
 def dashboard(request):
@@ -12,7 +11,7 @@ def dashboard(request):
         finance = Finance.objects.filter(data=today)
         qtd = finance.count()
         
-        from datetime import time
+
         reg_hour = []
         for i in range(8, 18):
             reg_hour.append(Finance.objects.filter(data=today, hora__hour=i))
