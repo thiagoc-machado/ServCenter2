@@ -102,7 +102,8 @@
                     <th>Nome</th>
                     <th>Serviço</th>
                     <th>Valor</th>
-                    <th>Forma de pgto.</th>
+                    <th>Entrada/saída</th>
+                    <th>Ações rápidas</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -110,12 +111,12 @@
                   <tr id="fin_table">
                     <th>
                       <a href="{% url 'edit_finance' finances.id %}"
-                        >{{ finances.id }}</a
+                      >{{ finances.id }}</a
                       >
                     </th>
                     <th>
                       <a href="{% url 'edit_finance' finances.id %}"
-                        >{{ finances.os }}</a
+                        >{{ finances.data }}</a
                       >
                     </th>
                     <th>
@@ -125,12 +126,12 @@
                     </th>
                     <th>
                       <a href="{% url 'edit_finance' finances.id %}"
-                        >{{ finances.valor }}</a
+                        >{{ finances.obs }}</a
                       >
                     </th>
                     <th>
                       <a href="{% url 'edit_finance' finances.id %}"
-                        >{{ finances.data }}</a
+                        >{{ finances.valor }}</a
                       >
                     </th>
                     <th>

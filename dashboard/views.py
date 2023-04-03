@@ -14,8 +14,10 @@ def dashboard(request):
 
         reg_hour = []
         for i in range(8, 18):
-            reg_hour.append(Finance.objects.filter(data=today, hora__hour=i))
-        print(reg_hour)
+            reg_hour.append(Finance.objects.filter(data=today, hora__hour=i).values('valor'))
+            
+        for i in range(len(reg_hour)):
+            print(reg_hour[i-1])
 
         
         finance_sum = 0
@@ -24,14 +26,12 @@ def dashboard(request):
             if finances.movimento == 'entrada':
                 valor = finances.valor
                 if valor is not None:
-                    valor = float(valor.replace('R$', '').replace(
-                        '.', '').replace(',', '.'))
+                    valor = float(valor.replace('R$', '').replace(',', '.'))
                     finance_sum += valor
             elif finances.movimento == 'saida':
                 valor = finances.valor
                 if valor is not None:
-                    valor = float(valor.replace('R$', '').replace(
-                        '.', '').replace(',', '.'))
+                    valor = float(valor.replace('R$', '').replace(',', '.'))
                     finance_min -= valor
 
         finance_minus = finance_min * -1
