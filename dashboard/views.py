@@ -1,11 +1,48 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseBadRequest
+from datetime import date
+from finance.models import Finance
+from datetime import time
 
 @login_required
 def dashboard(request):
     if request.method == "GET":
-        return render(request, 'dashboard.html') 
+        today = date.today()
+        finance = Finance.objects.filter(data=today)
+        qtd = finance.count()
+        
+        from datetime import time
+        reg_hour = []
+        for i in range(8, 18):
+            reg_hour.append(Finance.objects.filter(data=today, hora__hour=i))
+        print(reg_hour)
+
+        
+        finance_sum = 0
+        finance_min = 0
+        for finances in Finance.objects.filter(data=today):
+            if finances.movimento == 'entrada':
+                valor = finances.valor
+                if valor is not None:
+                    valor = float(valor.replace('R$', '').replace(
+                        '.', '').replace(',', '.'))
+                    finance_sum += valor
+            elif finances.movimento == 'saida':
+                valor = finances.valor
+                if valor is not None:
+                    valor = float(valor.replace('R$', '').replace(
+                        '.', '').replace(',', '.'))
+                    finance_min -= valor
+
+        finance_minus = finance_min * -1
+        finance_total = finance_sum - finance_minus
+        return render(request, 'dashboard.html', {'finance': finance,
+                                                'finance_sum': finance_sum,
+                                                'finance_minus': finance_minus,
+                                                'finance_total': finance_total,
+                                                'qtd': qtd, 'reg_hour': reg_hour
+                                                })
 
     else:
-        return HttpResponseBadRequest('Invalid request method')
+        return HttpResponseBadRequest('Invalid request method') 

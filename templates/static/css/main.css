@@ -71,6 +71,9 @@ button {
 #top_nav {
   background: rgba(65, 109, 150, 0.293);
 }
+.text {
+  text-decoration: none;
+}
 @media (min-width: 992px) {
   body {
     overflow: auto !important;
@@ -88,5 +91,11 @@ button {
     visibility: visible !important;
     height: calc(100% - var(--topNavbarHeight));
     top: var(--topNavbarHeight);
+  }
+  #cad_cli {
+    margin-top: -50px;
+  }
+  #cad_cli_tit{
+    margin-top: -50px;
   }
 }

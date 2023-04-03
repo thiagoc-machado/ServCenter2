@@ -6,6 +6,7 @@ class Finance(models.Model):
     data = models.DateField(blank=True)
     valor = models.CharField(max_length=10, null=True, blank=True)
     movimento = models.CharField(max_length=10, null=True, blank=True)
+    hora = models.TimeField(blank=True, null=True)
 
     def __str__(self):
         return self.nome

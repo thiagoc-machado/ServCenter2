@@ -49,12 +49,13 @@ def finance(request):
 
 
 @login_required
-def finance_dia(request):
+def finance_dia(request): 
     today = date.today()
     finance = Finance.objects.filter(data=today)
-
+    qtd = finance.count()
     finance_sum = 0
     finance_min = 0
+    
     for finances in Finance.objects.filter(data=today):
         if finances.movimento == 'entrada':
             valor = finances.valor
@@ -76,6 +77,7 @@ def finance_dia(request):
                                                 'finance_sum': finance_sum,
                                                 'finance_minus': finance_minus,
                                                 'finance_total': finance_total,
+                                                'qtd': qtd
                                                 })
 
 

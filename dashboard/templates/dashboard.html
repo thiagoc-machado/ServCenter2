@@ -4,46 +4,60 @@
 {% endblock %} {% block 'main' %}
 <title>Dashboard</title>
 <main id="main" class="mt-5 pt-3">
-  <div class="container-fluid">
+  <div class="container-fluid" id="cad_cli">
     <div class="row">
-      <div class="col-md-12">
+      <div class="col-md-12" id="cad_cli_tit">
         <h4>Dashboard</h4>
       </div>
     </div>
+
     <div class="row">
       <div class="col-md-3 mb-3">
-        <div class="card bg-primary text-white custom-card-height">
+        <a
+          href="{% url 'finance' %}"
+          class="card bg-primary text-white custom-card-height text"
+        >
           <h5 class="card-header">
             Serviços de hoje
-            <h3 id="subt1">25</h3>
+            <h3 id="subt2">{{qtd}}</h3>
           </h5>
-        </div>
+        </a>
       </div>
       <div class="col-md-3 mb-3">
-        <div class="card bg-success text-white custom-card-height">
+        <a
+          href="{% url 'finance' %}"
+          class="card bg-success text-white custom-card-height text"
+        >
           <h5 class="card-header">
             Entradas
-            <h3 id="subt2">R$ 2145,00</h3>
+            <h3 id="subt2">R$ {{finance_sum}}</h3>
           </h5>
-        </div>
+        </a>
       </div>
       <div class="col-md-3 mb-3">
-        <div class="card bg-danger text-white custom-card-height">
+        <a
+          href="{% url 'finance' %}"
+          class="card bg-danger text-white custom-card-height text"
+        >
           <h5 class="card-header">
             Saídas
-            <h3 id="subt3">R$ 985,00</h3>
+            <h3 id="subt3">R$ {{ finance_minus }}</h3>
           </h5>
-        </div>
+        </a>
       </div>
       <div class="col-md-3 mb-3">
-        <div class="card bg-warning text-dark custom-card-height">
+        <a
+          href="{% url 'finance' %}"
+          class="card bg-warning text-dark custom-card-height text"
+        >
           <h5 class="card-header">
             Total
-            <h3 id="subt1">R$ 1160,00</h3>
+            <h3 id="subt3">R$ {{ finance_total }}</h3>
           </h5>
-        </div>
+        </a>
       </div>
     </div>
+
     <div class="row">
       <div class="col-md-6 mb-3">
         <div class="card h-100">
@@ -92,134 +106,58 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>258</td>
-                    <td>2008/06/28</td>
-                    <td>Alberto Satou</td>
-                    <td>Recondicionamento de motor</td>
-                    <td>R$ 534,00</td>
-                    <td>Credito</td>
+                  {% for finances in finance %}
+                  <tr id="fin_table">
+                    <th>
+                      <a href="{% url 'edit_finance' finances.id %}"
+                        >{{ finances.id }}</a
+                      >
+                    </th>
+                    <th>
+                      <a href="{% url 'edit_finance' finances.id %}"
+                        >{{ finances.os }}</a
+                      >
+                    </th>
+                    <th>
+                      <a href="{% url 'edit_finance' finances.id %}"
+                        >{{ finances.nome }}</a
+                      >
+                    </th>
+                    <th>
+                      <a href="{% url 'edit_finance' finances.id %}"
+                        >{{ finances.valor }}</a
+                      >
+                    </th>
+                    <th>
+                      <a href="{% url 'edit_finance' finances.id %}"
+                        >{{ finances.data }}</a
+                      >
+                    </th>
+                    <th>
+                      <a href="{% url 'edit_finance' finances.id %}"
+                        >{{ finances.movimento }}</a
+                      >
+                    </th>
+                    <th>
+                      <a
+                        id="btn_ed"
+                        href="{% url 'edit_finance' finances.id %}"
+                        type="button"
+                        class="btn btn-success"
+                      >
+                        <i class="bi bi-pen"></i>
+                      </a>
+                      <a
+                        href="{% url 'del_finance' finances.id %}"
+                        id="btn_ap"
+                        type="button"
+                        class="btn btn-danger delete"
+                      >
+                        <i class="bi bi-trash"></i>
+                      </a>
+                    </th>
                   </tr>
-                  <tr>
-                    <td>234</td>
-                    <td>2012/08/02</td>
-                    <td>Maria Silva</td>
-                    <td>Troca de rolamento</td>
-                    <td>R$120,00</td>
-                    <td>Debito</td>
-                  </tr>
-                  <tr>
-                    <td>567</td>
-                    <td>2009/01/28</td>
-                    <td>Mario Matheus</td>
-                    <td>Rebubinamento de motor</td>
-                    <td>R$ 434,00</td>
-                    <td>Dinheiro</td>
-                  </tr>
-                  <tr>
-                    <td>2123</td>
-                    <td>2019/02/02</td>
-                    <td>João Ingles</td>
-                    <td>Troca do capacitor</td>
-                    <td>R$190,00</td>
-                    <td>PIX</td>
-                  </tr>
-                  <tr>
-                    <td>678</td>
-                    <td>2012/04/28</td>
-                    <td>Vinicius</td>
-                    <td>Troca de tampa do motor</td>
-                    <td>R$ 354,00</td>
-                    <td>Débito</td>
-                  </tr>
-                  <tr>
-                    <td>234</td>
-                    <td>2012/12/02</td>
-                    <td>Maria Silva</td>
-                    <td>Troca de rolamento</td>
-                    <td>R$120,00</td>
-                    <td>Debito</td>
-                  </tr>
-                  <tr>
-                    <td>567</td>
-                    <td>2009/11/28</td>
-                    <td>Mario Matheus</td>
-                    <td>Rebubinamento de motor</td>
-                    <td>R$ 434,00</td>
-                    <td>Dinheiro</td>
-                  </tr>
-                  <tr>
-                    <td>2123</td>
-                    <td>2019/12/02</td>
-                    <td>João Ingles</td>
-                    <td>Troca do capacitor</td>
-                    <td>R$190,00</td>
-                    <td>PIX</td>
-                  </tr>
-                  <tr>
-                    <td>258</td>
-                    <td>2008/06/28</td>
-                    <td>Alberto Satou</td>
-                    <td>Recondicionamento de motor</td>
-                    <td>R$ 534,00</td>
-                    <td>Credito</td>
-                  </tr>
-                  <tr>
-                    <td>234</td>
-                    <td>2012/08/02</td>
-                    <td>Maria Silva</td>
-                    <td>Troca de rolamento</td>
-                    <td>R$120,00</td>
-                    <td>Debito</td>
-                  </tr>
-                  <tr>
-                    <td>567</td>
-                    <td>2009/01/28</td>
-                    <td>Mario Matheus</td>
-                    <td>Rebubinamento de motor</td>
-                    <td>R$ 434,00</td>
-                    <td>Dinheiro</td>
-                  </tr>
-                  <tr>
-                    <td>2123</td>
-                    <td>2019/02/02</td>
-                    <td>João Ingles</td>
-                    <td>Troca do capacitor</td>
-                    <td>R$190,00</td>
-                    <td>PIX</td>
-                  </tr>
-                  <tr>
-                    <td>678</td>
-                    <td>2012/04/28</td>
-                    <td>Vinicius</td>
-                    <td>Troca de tampa do motor</td>
-                    <td>R$ 354,00</td>
-                    <td>Débito</td>
-                  </tr>
-                  <tr>
-                    <td>234</td>
-                    <td>2012/12/02</td>
-                    <td>Maria Silva</td>
-                    <td>Troca de rolamento</td>
-                    <td>R$120,00</td>
-                    <td>Debito</td>
-                  </tr>
-                  <tr>
-                    <td>567</td>
-                    <td>2009/11/28</td>
-                    <td>Mario Matheus</td>
-                    <td>Rebubinamento de motor</td>
-                    <td>R$ 434,00</td>
-                    <td>Dinheiro</td>
-                  </tr>
-                  <tr>
-                    <td>2123</td>
-                    <td>2019/12/02</td>
-                    <td>João Ingles</td>
-                    <td>Troca do capacitor</td>
-                    <td>R$190,00</td>
-                    <td>PIX</td>
-                  </tr>
+                  {% endfor %}
                 </tbody>
                 <tfoot></tfoot>
               </table>
