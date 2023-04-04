@@ -4,8 +4,10 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.messages import constants
-from .models import Services, User, client, Employees, work_order as work_order_model
+from .models import Services, User, client, Employees, work_order as work_order_model, image
 from finance.models import Finance
+from django.core.files.uploadedfile import InMemoryUploadedFile
+from io import BytesIO
 
 
 @login_required
@@ -103,9 +105,21 @@ def new_work_order(request):
             data_alteracao=datetime.now().date().strftime("%Y-%m-%d"),
             pgto_adiantado=pgto_adiantado,
             os_finalizada=os_finalizada,
+            photos=request.FILES.getlist('photos')
         )
         # if not client.objects.filter(pk=request.POST.get("cod_cli")).exists():
+        if 'photos' in request.FILES:
+        # percorre cada imagem enviada
+            for photo in request.FILES.getlist('photos'):
+                # cria um objeto image para cada imagem enviada
+                image_obj = image(
+                    photo=photo,
+                    order=work_orders
+                )
+                image_obj.save()
         work_orders.save()
+        
+        
         if pgto_adiantado == True and request.POST.get("total") != '':
 
             finances = Finance.objects.all()
@@ -160,8 +174,12 @@ def edit_work_order(request, id):
         tipo = ""
 
     if request.method == "GET":
+        
+        order = work_order_model.objects.get(id=id)
+        fotos = image.objects.filter(order_id=id)
         # print(Services.objects.get(cod=id) )
         return render(request, 'edit_work_order.html', {
+            'fotos': fotos,
             'id': id,
             'list_client': list_client,
             'list_employee': list_employee,
@@ -198,7 +216,7 @@ def edit_work_order(request, id):
             'os_finalizada': work_order_model.objects.get(id=id).os_finalizada,
             'data_entrada': work_order_model.objects.get(id=id).data_entrada.strftime("%Y-%m-%d"),
             'data_saida': work_order_model.objects.get(id=id).data_saida,
-            'data_alteracao': datetime.now().date()
+            'data_alteracao': datetime.now().date(),
         })
 
     if request.method == "POST":
@@ -237,7 +255,17 @@ def edit_work_order(request, id):
             "pgto_adiantado") and request.POST.get("total") != '' else False
         work_orders.os_finalizada = True if request.POST.get(
             "os_finalizada") else False
-
+        
+        if 'photos' in request.FILES:
+        # percorre cada imagem enviada
+            for photo in request.FILES.getlist('photos'):
+                # cria um objeto image para cada imagem enviada
+                image_obj = image(
+                    photo=photo,
+                    order=work_orders
+                )
+                image_obj.save()
+        
         work_orders.save()
 
         if work_order_model.objects.get(id=id).pgto_adiantado == True and request.POST.get("total") != '' and pago == False:

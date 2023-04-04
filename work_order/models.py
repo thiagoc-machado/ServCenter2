@@ -40,5 +40,5 @@ class work_order(models.Model):
 
 
 class image(models.Model):
-    photo = models.ImageField(upload_to="work_order")
-    order = models.ForeignKey(Services, on_delete=models.CASCADE)
+    photo = models.ImageField(upload_to="work_order/")
+    order = models.ForeignKey(work_order, on_delete=models.CASCADE)

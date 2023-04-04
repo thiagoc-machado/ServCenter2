@@ -14,7 +14,7 @@ def dashboard(request):
 
         reg_hour = []
         for i in range(8, 18):
-            reg_hour.append(Finance.objects.filter(data=today, hora__hour=i).values('valor'))
+             reg_hour.append(Finance.objects.filter(data=today, hora__hour=i).values('valor'))
             
         for i in range(len(reg_hour)):
             print(reg_hour[i-1])
