@@ -7,6 +7,7 @@ class Finance(models.Model):
     valor = models.CharField(max_length=10, null=True, blank=True)
     movimento = models.CharField(max_length=10, null=True, blank=True)
     hora = models.TimeField(auto_now_add=True, blank=True, null=True)
+    tipo_pgto = models.CharField(max_length=10, null=True, blank=True)
 
     def __str__(self):
         return self.nome

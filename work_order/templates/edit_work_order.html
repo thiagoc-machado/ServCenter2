@@ -1,6 +1,6 @@
 {% extends "main.html" %} {% load static %} {% block 'head' %}
 <link rel="stylesheet" href="{% static 'css/main.css' %}" />
-<link rel="stylesheet" href="{% static 'clients/css/new_client.css' %}" />
+<link rel="stylesheet" href="{% static 'work_order/css/work_order.css' %}" />
 
 {% comment %}
 <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
@@ -424,9 +424,17 @@
       >cancelar</a
     >
   </div>
-  {% for foto in fotos %}
-    <img src="{{ foto.photo.url }}" alt="{{ foto.photo.name }}" width="300px" />
-  {% endfor %}
+  <div class="imgs_box">
+    {% for foto in fotos %}
+    <img
+      class="imgs"
+      id="my-image-{{ forloop.counter }}"
+      src="{{ foto.photo.url }}"
+      alt="{{ foto.photo.name }}"
+      width="200px"
+    />
+    {% endfor %}
+  </div>
 </div>
 <script src="{% static 'work_order/js/script.js'%}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/accounting.js/0.4.1/accounting.min.js"></script>

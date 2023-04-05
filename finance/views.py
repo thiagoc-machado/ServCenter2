@@ -48,13 +48,13 @@ def finance(request):
 
 
 @login_required
-def finance_dia(request): 
+def finance_dia(request):
     today = date.today()
     finance = Finance.objects.filter(data=today)
     qtd = finance.count()
     finance_sum = 0
     finance_min = 0
-    
+
     for finances in Finance.objects.filter(data=today):
         if finances.movimento == 'entrada':
             valor = finances.valor
@@ -71,7 +71,6 @@ def finance_dia(request):
 
     finance_minus = finance_min * -1
     finance_total = finance_sum - finance_minus
-
 
     return render(request, 'finance_dia.html', {'finance': finance,
                                                 'finance_sum': finance_sum,
@@ -168,6 +167,7 @@ def finance_ano(request):
                                                 'finance_total': finance_total,
                                                 })
 
+
 @user_passes_test(lambda u: u.is_superuser)
 def finance_tot(request):
     finance = Finance.objects.all()
@@ -194,6 +194,7 @@ def finance_tot(request):
                                                 'finance_total': finance_total,
                                                 })
 
+
 @login_required
 def new_finance(request):
     if request.method == "GET":
@@ -207,6 +208,7 @@ def new_finance(request):
         data = request.POST.get("inputData")
         valor = round(float(request.POST.get("inputValor")), 2)
         movimento = 'entrada'
+        tipo_pgto = request.POST.get("inputTipoPgto")
 
         finances = Finance(
             obs=obs,
@@ -214,11 +216,13 @@ def new_finance(request):
             data=data,
             valor='R$ ' + str(valor),
             movimento=movimento,
+            tipo_pgto=tipo_pgto,
         )
         finances.save()
         messages.add_message(request, constants.SUCCESS,
                              'Nova entrada cadastrada com sucesso')
     return redirect('finance')
+
 
 @login_required
 def new_finance_out(request):
@@ -245,6 +249,7 @@ def new_finance_out(request):
         messages.add_message(request, constants.SUCCESS,
                              'Nova saída cadastrada com sucesso')
     return redirect('finance')
+
 
 @login_required
 def edit_finance(request, id):
@@ -278,6 +283,7 @@ def edit_finance(request, id):
         return redirect('finance')
     else:
         return HttpResponseBadRequest('Invalid request method')
+
 
 @user_passes_test(lambda u: u.is_superuser)
 def del_finance(request, id):

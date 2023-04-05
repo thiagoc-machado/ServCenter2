@@ -1,46 +1,52 @@
-.row {
-  margin-left: 0px;
-  margin-right: 0px;
+.imgs {
+  border-radius: 25px;
+  background: #f0f8ff;
+  box-shadow: 7px 7px 14px #dde4eb, -7px -7px 14px #ffffff;
+  padding: 10px;
+  gap:10px;
+  width: 200px;
+  height: auto;
+}
+.main {
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-bottom: 10px;
   padding: 0;
 }
-#cad_cli_tit {
-  margin-top: 0px;
-  font-size: 2vh;
+#cad_cli_tit a {
+  margin-top: -4px;
+  font-size: 3vh;
   font-weight: 500;
+  border-radius: 10px;
 }
-#btn_nc,
-#btn_ac {
-  font-size: 1vh;
-  margin: 0px 0px 5px 12px;
+#cli_atv {
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
-#btn_ed,
-#btn_ap,
-#btn_wz {
-  width: 20px;
-  font-size: 1vh;
-  padding: 3px;
-  justify-content: center;
-}
-#table_cli {
-  font-size: 1.5vh;
-  width: auto;
-}
-.actions_bar {
-  padding: 0px;
-}
-#acoes_th {
-  min-width: 40px;
+#canc_btn {
+  margin-top: -67px;
+  margin-left: 80px;
 }
 
-#wo_table td a{
-  text-decoration: none;
-  color: black;
+.checkbox {
+  margin-top: 10px;
+  border: 1px solid rgb(249, 249, 249);
+  border-radius: 5px;
+  justify-content: center;
+  font-size: larger;
+  padding: 10px;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+.checkbox input {
+  background-color: rgb(163, 56, 56);
 }
 
 @media (min-width: 992px) {
-  .row {
-    margin-left: 200px;
-    margin-right: 1.5px;
+  .main {
+    margin-left: 210px;
+    margin-right: 10px;
   }
   #cad_cli_tit {
     margin-top: -50px;
@@ -48,38 +54,12 @@
     font-weight: 500;
     border: 0;
     padding: 0;
-    margin-bottom: 20px;
   }
-  #btn_nc,
-  #btn_ac {
-    padding: 10px;
-    font-size: 1.5vh;
-    margin: 0px 0px 5px 12px;
+  #canc_btn {
+    margin-top: -65px;
+    margin-left: 80px;
   }
-  #btn_ed,
-  #btn_ap,
-  #btn_wz {
-    width: 30px;
-    font-size: 1.5vh;
-    padding: 3px;
-  }
-  #op1 {
-    background: rgb(255, 176, 176);
-  }
-  #op2 {
-    background: rgb(255, 176, 176);
-  }
-  #op3 {
-    background: rgb(176, 234, 255);
-  }
-  #op4 {
-    background: rgb(222, 176, 255);
-  }
-
-  #table_cli {
-    font-size: 2vh;
-  }
-  #acoes_th {
-    width: 120px;
+  #some {
+    display: none;
   }
 }

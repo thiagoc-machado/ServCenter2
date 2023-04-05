@@ -9,4 +9,3 @@ urlpatterns = [
     path('edit_work_order/<int:id>', views.edit_work_order, name="edit_work_order"),
     path('del_work_order/<int:id>', views.del_work_order, name="del_work_order"),
 ]
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

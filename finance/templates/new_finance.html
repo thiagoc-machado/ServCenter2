@@ -31,7 +31,7 @@
       <input
         type="text"
         class="form-control"
-        placeholder="Nome"
+        placeholder="Observações do serviço"
         name="inputObs"
         value="{{obs}}"
       />
@@ -50,6 +50,19 @@
       <label for="imputData" class="form-label">Data</label>
       <input type="date" class="form-control" name="inputData" value="{{data}}" />
     </div>
+    <div class="col-md-2">
+      <label for="inputTipoPgto" class="form-label">Modo de pagamento</label>
+      <select name="inputTipoPgto" class="form-select" value="{{inputTipoPgto}}">
+        <option selected>{{inputTipoPgto}}</option>
+        <option>Dinheiro</option>
+        <option>PIX</option>
+        <option>Crédito</option>
+        <option>Débito</option>
+        <option>Depósito</option>
+        <option>Boleto</option>
+      </select>
+    </div>
+    
     <div class="col-md-2">
       <label for="inputValor" class="form-label">Valor</label>
       <input

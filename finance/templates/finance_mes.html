@@ -91,6 +91,7 @@
                 <th>Valor</th>
                 <th>Data</th>
                 <th>movimento</th>
+                <th>Tipo Pgto</th>
                 <th id="acoes_th">Ações</th>
               </tr>
             </thead>
@@ -103,6 +104,7 @@
                 <th><a href="{% url 'edit_finance' finances.id %}">{{ finances.valor }}</a></th>
                 <th><a href="{% url 'edit_finance' finances.id %}">{{ finances.data }}</a></th>
                 <th><a href="{% url 'edit_finance' finances.id %}">{{ finances.movimento }}</a></th>
+                <th><a href="{% url 'edit_finance' finances.id %}">{{ finances.tipo_pgto }}</a></th>
                 <th>
                   <a id="btn_ed" href="{% url 'edit_finance' finances.id %}" type="button" class="btn btn-success">
                     <i class="bi bi-pen"></i>

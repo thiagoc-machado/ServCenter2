@@ -10,7 +10,7 @@ from django.contrib import messages
 from django.contrib.messages import constants
 from django.core import management
 from io import StringIO
-
+import zipfile
 
 @user_passes_test(lambda u: u.is_superuser)
 def backup(request):
@@ -24,19 +24,39 @@ def backup(request):
 
 @user_passes_test(lambda u: u.is_superuser)
 def backup_download(request):
-    backup_filename = 'backup.dump'
-    backup_path = os.path.join('media', 'backup', backup_filename)
-
-    management.call_command('dbbackup', output_path=backup_path)
-
+    backup_filename = 'backup.zip'
+    backup_path = os.path.join(settings.MEDIA_ROOT, 'backup', backup_filename)
+    print ('Backup [*      ]')
+    # cria um arquivo zip que inclui o arquivo de backup e a pasta de mídia
+    with zipfile.ZipFile(backup_path, 'w', compression=zipfile.ZIP_DEFLATED) as backup_zip:
+        # adiciona o arquivo de backup ao arquivo zip
+        db_backup_path = os.path.join(
+            settings.MEDIA_ROOT, 'backup', 'backup.dump')
+        print ('Backup [**     ]')
+        management.call_command('dbbackup', output_path=db_backup_path)
+        print ('Backup [***    ]')
+        backup_zip.write(db_backup_path, 'backup.dump')
+        print ('Backup [****   ]')
+        # adiciona a pasta de mídia ao arquivo zip
+        media_root_len = len(settings.MEDIA_ROOT)
+        print ('Backup [*****  ]')
+        for root, dirs, files in os.walk(settings.MEDIA_ROOT):
+            for file in files:
+                file_path = os.path.join(root, file)
+                # remove o prefixo do caminho da pasta de mídia
+                zip_path = file_path[media_root_len:]
+                backup_zip.write(file_path, zip_path)
+        print ('Backup [****** ]')
+        
     if os.path.exists(backup_path):
         with open(backup_path, 'rb') as f:
-            response = HttpResponse(
-                f.read(), content_type='application/x-sqlite3')
+            response = HttpResponse(f.read(), content_type='application/zip')
             response['Content-Disposition'] = f'attachment; filename="{backup_filename}"'
             messages.add_message(request, constants.SUCCESS,
                                  'Backup realizado com sucesso!')
+            print ('Backup [*******]')
             return response
+        
     else:
         messages.add_message(request, constants.ERROR,
                              'Erro ao efetuar o backup, Nenhum arquivo encontrado!')
@@ -60,9 +80,9 @@ def restore(request):
         # Add these lines to disable the prompt for confirmation
         in_buffer = StringIO('yes\n')
         out_buffer = StringIO()
-        with open(backup_path, 'rb') as backup_file:
-            management.call_command("dbrestore", database='default',
-                                    input_filename=backup_path, interactive=False)
+        with open(backup_path, 'rb') as f:
+            management.call_command(
+                "dbrestore", database='default', input_filename=backup_path, interactive=False)
 
         try:
             os.remove(backup_path)
