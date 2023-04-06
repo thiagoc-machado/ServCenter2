@@ -153,7 +153,7 @@
                   </li>
                   
                   <li>
-                    <a href="/admin" class="nav-link px-3">
+                    <a href="/admin" class="nav-link px-3" target="_blank">
                       <span class="me-2"
                         ><i class="bi bi-speedometer2"></i
                       ></span>
@@ -212,7 +212,7 @@
                 <i class="bi bi-person-fill"></i>
               </a>
               <ul class="dropdown-menu dropdown-menu-end">
-                <li><a class="d-block p-2 bg-primary text-white">{{user.firtname}}</a></li>
+                <li><a class="d-block p-2 bg-primary text-white">{{user.email}}</a></li>
                 <li><a class="dropdown-item" href="{% url 'sair' %}">Logout</a></li>
               </ul>
             </li>

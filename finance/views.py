@@ -9,6 +9,10 @@ from django.utils import timezone
 from datetime import date, datetime, timedelta
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth.decorators import login_required
+import pytz
+
+br_tz = pytz.timezone('America/Sao_Paulo')
+time_br = datetime.now(br_tz).time()
 
 
 @user_passes_test(lambda u: u.is_superuser)
@@ -17,7 +21,7 @@ def finance(request):
     finance_date = Finance.objects.all().order_by('data').first()
     if finance_date is not None:
         finance_date = finance_date.data
-
+    
     finance_sum = 0
     finance_min = 0
     for finances in Finance.objects.all():
@@ -54,14 +58,11 @@ def finance_dia(request):
     qtd = finance.count()
     finance_sum = 0
     finance_min = 0
-
     for finances in Finance.objects.filter(data=today):
         if finances.movimento == 'entrada':
             valor = finances.valor
             if valor is not None:
-                print(valor)
                 valor = float(valor.replace('R$', '').replace(',', '.'))
-                print(valor)
                 finance_sum += valor
         elif finances.movimento == 'saida':
             valor = finances.valor
@@ -209,7 +210,7 @@ def new_finance(request):
         valor = round(float(request.POST.get("inputValor")), 2)
         movimento = 'entrada'
         tipo_pgto = request.POST.get("inputTipoPgto")
-
+        print(time_br)
         finances = Finance(
             obs=obs,
             nome=nome,
@@ -217,6 +218,7 @@ def new_finance(request):
             valor='R$ ' + str(valor),
             movimento=movimento,
             tipo_pgto=tipo_pgto,
+            hora =  time_br,
         )
         finances.save()
         messages.add_message(request, constants.SUCCESS,
@@ -237,13 +239,13 @@ def new_finance_out(request):
         data = request.POST.get("inputData")
         valor = round(float(request.POST.get("inputValor")), 2)
         movimento = 'saida'
-
         finances = Finance(
             obs=obs,
             nome=nome,
             data=data,
             valor='R$ ' + str(valor),
             movimento=movimento,
+            hora=time_br,
         )
         finances.save()
         messages.add_message(request, constants.SUCCESS,

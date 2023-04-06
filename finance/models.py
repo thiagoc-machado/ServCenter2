@@ -6,7 +6,7 @@ class Finance(models.Model):
     data = models.DateField(blank=True)
     valor = models.CharField(max_length=10, null=True, blank=True)
     movimento = models.CharField(max_length=10, null=True, blank=True)
-    hora = models.TimeField(auto_now_add=True, blank=True, null=True)
+    hora = models.TimeField(blank=True)
     tipo_pgto = models.CharField(max_length=10, null=True, blank=True)
 
     def __str__(self):

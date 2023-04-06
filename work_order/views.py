@@ -8,7 +8,10 @@ from .models import Services, User, client, Employees, work_order as work_order_
 from finance.models import Finance
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from io import BytesIO
+import pytz
 
+br_tz = pytz.timezone('America/Sao_Paulo')
+time_br = datetime.now(br_tz).time()
 
 @login_required
 def work_order(request):
@@ -136,6 +139,7 @@ def new_work_order(request):
                 data=data,
                 valor=valor,
                 movimento=movimento,
+                hora = time_br
             )
             finances.save()
 
@@ -284,6 +288,7 @@ def edit_work_order(request, id):
                 data=data,
                 valor=valor,
                 movimento=movimento,
+                hora = time_br
             )
             finances.save()
 

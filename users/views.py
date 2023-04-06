@@ -6,6 +6,7 @@ from django.contrib.messages import constants
 from django.contrib.auth.models import User
 from django.contrib.auth.models import Group
 from django.contrib.auth.decorators import user_passes_test
+from django.contrib.auth.hashers import make_password
 
 @user_passes_test(lambda u: u.is_superuser)
 def users(request):
@@ -97,7 +98,7 @@ def edit_users(request, id):
             last_login = User.objects.get(id=id).last_login
 
         return render(request, 'edit_users.html', {'id': id,
-                                                   'password': User.objects.get(id=id).password,
+                                                   #'password': User.objects.get(id=id).password,
                                                    'last_login': last_login.strftime("%Y-%m-%d"),
                                                    'is_superuser': User.objects.get(id=id).is_superuser,
                                                    'username': User.objects.get(id=id).username,
@@ -111,8 +112,8 @@ def edit_users(request, id):
 
     elif request.method == "POST":
         user_obj = User.objects.get(id=id)
-
-        user_obj.password = request.POST.get("password")
+        if request.POST.get("password") != User.objects.get(id=id).password:
+            user_obj.password = make_password(request.POST.get("password"))
         user_obj.last_login = request.POST.get("last_login")
         user_obj.is_superuser = request.POST.get("is_superuser")
         user_obj.username = request.POST.get("username")

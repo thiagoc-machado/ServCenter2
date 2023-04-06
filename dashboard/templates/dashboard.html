@@ -1,8 +1,12 @@
 {% extends "main.html" %} {% load static %} {% block 'head' %}
 <link rel="stylesheet" href="{% static 'css/main.css' %}" />
+<script src="{% static 'dashboard/js/scripts.js' %}"></script>
 
 {% endblock %} {% block 'main' %}
 <title>Dashboard</title>
+<script>
+  var values_by_hour = JSON.parse('{{ values_by_hour|safe }}');
+</script>
 <main id="main" class="mt-5 pt-3">
   <div class="container-fluid" id="cad_cli">
     <div class="row">
@@ -59,110 +63,98 @@
     </div>
 
     <div class="row">
-      <div class="col-md-6 mb-3">
+      <div class="col-md-12 mb-3">
         <div class="card h-100">
           <div class="card-header">
             <span class="me-2"><i class="bi bi-bar-chart-fill"></i></span>
-            Gráfico Semanal
+            Gráfico Diário
           </div>
           <div class="card-body">
-            <canvas class="chart" width="400" height="150"></canvas>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-6 mb-3">
-        <div class="card h-100">
-          <div class="card-header">
-            <span class="me-2"><i class="bi bi-bar-chart-fill"></i></span>
-            Gráfico Mensal
-          </div>
-          <div class="card-body">
-            <canvas class="chart2" width="400" height="150"></canvas>
+            <canvas class="chart" width="800" height="150"></canvas>
           </div>
         </div>
       </div>
     </div>
     <div class="row">
       <div class="col-md-12 mb-3">
-        <div class="card">
+        <div class="card h-100">
           <div class="card-header">
-            <span><i class="bi bi-table me-2"></i></span> Entradas no caixa
+            <span><i class="bi bi-table me-2"></i></span>
+            Entradas no caixa
           </div>
-          <div class="card-body">
-            <div class="table-responsive">
-              <table
-                id="example"
-                class="table table-striped data-table"
-                style="width: 100%"
-              >
-                <thead>
-                  <tr>
-                    <th>Cod.</th>
-                    <th>Data</th>
-                    <th>Nome</th>
-                    <th>Serviço</th>
-                    <th>Valor</th>
-                    <th>Entrada/saída</th>
-                    <th>Ações rápidas</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {% for finances in finance %}
-                  <tr id="fin_table">
-                    <th>
-                      <a href="{% url 'edit_finance' finances.id %}"
+          <div class="card-body table-responsive">
+            <table
+              id="example"
+              class="table table-striped data-table"
+              style="width: 100%"
+            >
+              <thead>
+                <tr>
+                  <th>Cod.</th>
+                  <th>Data</th>
+                  <th>Nome</th>
+                  <th>Serviço</th>
+                  <th>Valor</th>
+                  <th>Entrada/saída</th>
+                  <th>Ações rápidas</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for finances in finance %}
+                <tr id="fin_table">
+                  <th>
+                    <a href="{% url 'edit_finance' finances.id %}"
                       >{{ finances.id }}</a
-                      >
-                    </th>
-                    <th>
-                      <a href="{% url 'edit_finance' finances.id %}"
-                        >{{ finances.data }}</a
-                      >
-                    </th>
-                    <th>
-                      <a href="{% url 'edit_finance' finances.id %}"
-                        >{{ finances.nome }}</a
-                      >
-                    </th>
-                    <th>
-                      <a href="{% url 'edit_finance' finances.id %}"
-                        >{{ finances.obs }}</a
-                      >
-                    </th>
-                    <th>
-                      <a href="{% url 'edit_finance' finances.id %}"
-                        >{{ finances.valor }}</a
-                      >
-                    </th>
-                    <th>
-                      <a href="{% url 'edit_finance' finances.id %}"
-                        >{{ finances.movimento }}</a
-                      >
-                    </th>
-                    <th>
-                      <a
-                        id="btn_ed"
-                        href="{% url 'edit_finance' finances.id %}"
-                        type="button"
-                        class="btn btn-success"
-                      >
-                        <i class="bi bi-pen"></i>
-                      </a>
-                      <a
-                        href="{% url 'del_finance' finances.id %}"
-                        id="btn_ap"
-                        type="button"
-                        class="btn btn-danger delete"
-                      >
-                        <i class="bi bi-trash"></i>
-                      </a>
-                    </th>
-                  </tr>
-                  {% endfor %}
-                </tbody>
-                <tfoot></tfoot>
-              </table>
-            </div>
+                    >
+                  </th>
+                  <th>
+                    <a href="{% url 'edit_finance' finances.id %}"
+                      >{{ finances.data }}</a
+                    >
+                  </th>
+                  <th>
+                    <a href="{% url 'edit_finance' finances.id %}"
+                      >{{ finances.nome }}</a
+                    >
+                  </th>
+                  <th>
+                    <a href="{% url 'edit_finance' finances.id %}"
+                      >{{ finances.obs }}</a
+                    >
+                  </th>
+                  <th>
+                    <a href="{% url 'edit_finance' finances.id %}"
+                      >{{ finances.valor }}</a
+                    >
+                  </th>
+                  <th>
+                    <a href="{% url 'edit_finance' finances.id %}"
+                      >{{ finances.movimento }}</a
+                    >
+                  </th>
+                  <th>
+                    <a
+                      id="btn_ed"
+                      href="{% url 'edit_finance' finances.id %}"
+                      type="button"
+                      class="btn btn-success"
+                    >
+                      <i class="bi bi-pen"></i>
+                    </a>
+                    <a
+                      href="{% url 'del_finance' finances.id %}"
+                      id="btn_ap"
+                      type="button"
+                      class="btn btn-danger delete"
+                    >
+                      <i class="bi bi-trash"></i>
+                    </a>
+                  </th>
+                </tr>
+                {% endfor %}
+              </tbody>
+              <tfoot></tfoot>
+            </table>
           </div>
         </div>
       </div>
