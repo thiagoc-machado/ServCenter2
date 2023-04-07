@@ -18,6 +18,8 @@ class Config(models.Model):
     logo2 = models.ImageField(upload_to='logos', blank=True, null=True)
     obs = models.TextField(blank=True, null=True)
     data = models.DateField(blank=True, null=True)
+    telefone = models.CharField(max_length=20, blank=True, null=True)
+    whatsapp = models.CharField(max_length=20, blank=True, null=True)
     
     def __str__(self):
         return self.nome_empresa

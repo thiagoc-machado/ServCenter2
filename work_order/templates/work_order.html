@@ -73,12 +73,13 @@
                   </td> 
                   </td>
                   <th>
-                    <a href="{% url 'edit_work_order' orders.id %}" id="btn_ap" type="button" class="btn btn-primary">
+                    <a href="{% url 'cupon' orders.id %}" id="btn_ap" type="button" class="btn btn-primary" target="_blank">
                       <i class="bi bi-printer"></i>
                     </a>
                     <a href="{% url 'edit_work_order' orders.id %}" id="btn_ap" type="button" class="btn btn-success">
                       <i class="bi bi-pen"></i>
                     </a>
+                  
                     <a href="{% url 'del_work_order' orders.id %}" id="btn_ap" type="button" class="btn btn-danger delete">
                       <i class="bi bi-trash"></i>
                     </a>

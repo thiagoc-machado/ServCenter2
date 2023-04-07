@@ -10,6 +10,7 @@ from datetime import date, datetime, timedelta
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth.decorators import login_required
 import pytz
+from openpyxl import Workbook
 
 br_tz = pytz.timezone('America/Sao_Paulo')
 time_br = datetime.now(br_tz).time()
@@ -30,13 +31,15 @@ def finance(request):
             if valor is not None:
                 valor = float(valor.replace('R$', '').replace(',', '.'))
                 finance_sum += valor
-        elif finances.movimento == 'saida':
+        elif finances.movimento == 'saída':
             valor = finances.valor
             if valor is not None:
                 valor = float(valor.replace('R$', '').replace(',', '.'))
                 finance_min -= valor
     finance_minus = finance_min * -1
-    finance_total = finance_sum - finance_minus
+    finance_tot = finance_sum - finance_minus
+    finance_total = round(finance_tot, 2)
+    
     finance_date = ''
     latest_finance = Finance.objects.all().order_by('data').last()
 
@@ -64,14 +67,15 @@ def finance_dia(request):
             if valor is not None:
                 valor = float(valor.replace('R$', '').replace(',', '.'))
                 finance_sum += valor
-        elif finances.movimento == 'saida':
+        elif finances.movimento == 'saída':
             valor = finances.valor
             if valor is not None:
                 valor = float(valor.replace('R$', '').replace(',', '.'))
                 finance_min -= valor
 
     finance_minus = finance_min * -1
-    finance_total = finance_sum - finance_minus
+    finance_tot = finance_sum - finance_minus
+    finance_total = round(finance_tot, 2)
 
     return render(request, 'finance_dia.html', {'finance': finance,
                                                 'finance_sum': finance_sum,
@@ -96,13 +100,14 @@ def finance_sem(request):
             if valor is not None:
                 valor = float(valor.replace('R$', '').replace(',', '.'))
                 finance_sum += valor
-        elif finances.movimento == 'saida':
+        elif finances.movimento == 'saída':
             valor = finances.valor
             if valor is not None:
                 valor = float(valor.replace('R$', '').replace(',', '.'))
                 finance_min -= valor
     finance_minus = finance_min * -1
-    finance_total = finance_sum - finance_minus
+    finance_tot = finance_sum - finance_minus
+    finance_total = round(finance_tot, 2)
 
     return render(request, 'finance_sem.html', {'finance': finance,
                                                 'finance_sum': finance_sum,
@@ -126,13 +131,14 @@ def finance_mes(request):
             if valor is not None:
                 valor = float(valor.replace('R$', '').replace(',', '.'))
                 finance_sum += valor
-        elif finances.movimento == 'saida':
+        elif finances.movimento == 'saída':
             valor = finances.valor
             if valor is not None:
                 valor = float(valor.replace('R$', '').replace(',', '.'))
                 finance_min -= valor
     finance_minus = finance_min * -1
-    finance_total = finance_sum - finance_minus
+    finance_tot = finance_sum - finance_minus
+    finance_total = round(finance_tot, 2)
 
     return render(request, 'finance_mes.html', {'finance': finance,
                                                 'finance_sum': finance_sum,
@@ -154,13 +160,14 @@ def finance_ano(request):
             if valor is not None:
                 valor = float(valor.replace('R$', '').replace(',', '.'))
                 finance_sum += valor
-        elif finances.movimento == 'saida':
+        elif finances.movimento == 'saída':
             valor = finances.valor
             if valor is not None:
                 valor = float(valor.replace('R$', '').replace(',', '.'))
                 finance_min -= valor
     finance_minus = finance_min * -1
-    finance_total = finance_sum - finance_minus
+    finance_tot = finance_sum - finance_minus
+    finance_total = round(finance_tot, 2)
 
     return render(request, 'finance_ano.html', {'finance': finance,
                                                 'finance_sum': finance_sum,
@@ -181,13 +188,14 @@ def finance_tot(request):
             if valor is not None:
                 valor = float(valor.replace('R$', '').replace(',', '.'))
                 finance_sum += valor
-        elif finances.movimento == 'saida':
+        elif finances.movimento == 'saída':
             valor = finances.valor
             if valor is not None:
                 valor = float(valor.replace('R$', '').replace(',', '.'))
                 finance_min -= valor
     finance_minus = finance_min * -1
-    finance_total = finance_sum - finance_minus
+    finance_tot = finance_sum - finance_minus
+    finance_total = round(finance_tot, 2)
 
     return render(request, 'finance_tot.html', {'finance': finance,
                                                 'finance_sum': finance_sum,
@@ -210,7 +218,7 @@ def new_finance(request):
         valor = round(float(request.POST.get("inputValor")), 2)
         movimento = 'entrada'
         tipo_pgto = request.POST.get("inputTipoPgto")
-        print(time_br)
+
         finances = Finance(
             obs=obs,
             nome=nome,
@@ -238,7 +246,9 @@ def new_finance_out(request):
         nome = request.POST.get("inputNome")
         data = request.POST.get("inputData")
         valor = round(float(request.POST.get("inputValor")), 2)
-        movimento = 'saida'
+        movimento = 'saída'
+        tipo_pgto = request.POST.get("inputTipoPgto")
+        
         finances = Finance(
             obs=obs,
             nome=nome,
@@ -246,6 +256,7 @@ def new_finance_out(request):
             valor='R$ ' + str(valor),
             movimento=movimento,
             hora=time_br,
+            tipo_pgto=tipo_pgto,
         )
         finances.save()
         messages.add_message(request, constants.SUCCESS,
@@ -264,6 +275,7 @@ def edit_finance(request, id):
             'data': Finance.objects.get(id=id).data.strftime('%Y-%m-%d'),
             'valor': Finance.objects.get(id=id).valor,
             'movimento': Finance.objects.get(id=id).movimento,
+            'tipo_pgto': Finance.objects.get(id=id).tipo_pgto,
         })
 
     elif request.method == "POST":
@@ -273,11 +285,12 @@ def edit_finance(request, id):
         finances.data = request.POST.get("inputData")
         finances.valor = request.POST.get("inputValor")
         finances.movimento = request.POST.get("in_out")
+        finances.tipo_pgto = request.POST.get("inputTipoPgto")
 
         if finances.movimento == 'on':
-            finances.movimento = "Entrada"
+            finances.movimento = "entrada"
         else:
-            finances.movimento = "Saída"
+            finances.movimento = "saída"
 
         finances.save()
         messages.add_message(request, constants.SUCCESS,
@@ -294,3 +307,36 @@ def del_finance(request, id):
     messages.add_message(request, constants.SUCCESS,
                          'Lançamento no caixa apagado com sucesso')
     return redirect('finance')
+
+
+@user_passes_test(lambda u: u.is_superuser)
+def exportar_xlsx(request):
+    # Obter dados filtrados da tabela
+    finance = Finance.objects.filter(...)
+
+    # Criar um novo arquivo xlsx
+    wb = Workbook()
+
+    # Obter a planilha ativa (worksheet)
+    ws = wb.active
+
+    # Adicionar cabeçalho para a planilha
+    ws.append(['Data', 'Valor'])
+
+    # Adicionar dados filtrados à planilha
+    for dado in finance:
+        ws.append([dado.data, dado.valor])
+
+    # Configurar o nome do arquivo de saída
+    filename = 'financeiro.xlsx'
+
+    # Definir o tipo de conteúdo da resposta HTTP
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+
+    # Definir o cabeçalho da resposta HTTP para anexar o arquivo xlsx
+    response['Content-Disposition'] = f'attachment; filename="{filename}"'
+
+    # Salvar o arquivo xlsx na resposta HTTP
+    wb.save(response)
+
+    return response

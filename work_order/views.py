@@ -6,9 +6,13 @@ from django.contrib import messages
 from django.contrib.messages import constants
 from .models import Services, User, client, Employees, work_order as work_order_model, image
 from finance.models import Finance
+from config.models import Config
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from io import BytesIO
 import pytz
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import letter
+from reportlab.lib.utils import ImageReader
 
 br_tz = pytz.timezone('America/Sao_Paulo')
 time_br = datetime.now(br_tz).time()
@@ -131,6 +135,7 @@ def new_work_order(request):
             data = datetime.now().date().strftime("%Y-%m-%d")
             valor = request.POST.get("total")
             movimento = 'entrada'
+            tipo_pgto=request.POST.get("modo_pgto")
 
             finances = Finance(
                 obs=obs,
@@ -138,7 +143,8 @@ def new_work_order(request):
                 data=data,
                 valor=valor,
                 movimento=movimento,
-                hora = time_br
+                hora = time_br,
+                tipo_pgto=tipo_pgto,
             )
             finances.save()
 
@@ -311,3 +317,92 @@ def del_work_order(request, id):
     messages.add_message(request, constants.SUCCESS,
                          'Ordem de serviço apagada com sucesso')
     return redirect('work_order')
+
+
+def cupon(request, id):
+    
+    config = Config.objects.get(id=2)
+    order = work_order_model.objects.get(id=id)
+    
+    nome = order.cod_cli.nome
+    whatsapp = order.whatsapp
+    data_entrada = order.data_entrada.strftime("%Y-%m-%d")
+    hora_entrada = order.data_entrada.strftime("%H:%M")
+    cod_os = order.pk
+    cod_cli = order.cod_cli.pk
+    cod_tec = order.cod_tec
+    cod_ser = order.cod_ser
+    cod_user = order.cod_user
+    whatsapp = order.whatsapp
+    obs_cli = order.obs_cli
+    produto = order.produto
+    marca = order.marca
+    modelo = order.modelo
+    serie = order.serie
+    condicao = order.condicao
+    acessorios = order.acessorios
+    defeito = order.defeito
+    obs_ser = order.obs_ser
+    solucao = order.solucao
+    preco = order.preco
+    desconto = order.desconto
+    acressimo = order.acressimo
+    total = order.total
+    modo_pgto = order.modo_pgto
+    data_alteracao = order.data_alteracao
+    pgto_adiantado = order.pgto_adiantado
+    os_finalizada = order.os_finalizada
+
+    
+    
+    
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'inline; filename="coupon.pdf"'
+
+    # Define as informações do cupom
+    store_name = config.nome_fantasia
+    store_address = config.endereco
+    store_phone = config.telefone
+    customer_name = 'Nome do Cliente'
+    date = '01/01/2023'
+    items = [
+        {'description': 'Item 1', 'price': 10.00},
+        {'description': 'Item 2', 'price': 20.00},
+        {'description': 'Item 3', 'price': 30.00},
+    ]
+    total = sum(item['price'] for item in items)
+
+    # Cria um objeto PDF com o ReportLab
+    pdf = canvas.Canvas(response, pagesize=letter)
+
+    # Adiciona o logotipo da loja
+    # logo_path = 'path/to/logo.png'
+    # logo = ImageReader(logo_path)
+    # pdf.drawImage(logo, 50, 700, width=150, height=150)
+
+    # Adiciona as informações da loja
+    pdf.drawString(220, 750, store_name)
+    pdf.drawString(50, 735, store_address)
+    pdf.drawString(50, 720, store_phone)
+
+    # Adiciona as informações do cliente e do cupom
+    pdf.drawString(50, 650, 'Nome do Cliente: {}'.format(customer_name))
+    pdf.drawString(50, 635, 'Data: {}'.format(date))
+    pdf.line(50, 620, 550, 620)
+
+    # Adiciona os itens do cupom
+    y = 600
+    for item in items:
+        pdf.drawString(50, y, item['description'])
+        pdf.drawString(350, y, '{:.2f}'.format(item['price']))
+        y -= 20
+
+    # Adiciona o total do cupom
+    pdf.line(50, y - 10, 550, y - 10)
+    pdf.drawString(350, y - 30, 'Total: {:.2f}'.format(total))
+
+    # Fecha o objeto PDF
+    pdf.showPage()
+    pdf.save()
+
+    return response
