@@ -108,7 +108,6 @@ def new_work_order(request):
             data_alteracao=datetime.now().date().strftime("%Y-%m-%d"),
             pgto_adiantado=pgto_adiantado,
             os_finalizada=os_finalizada,
-            photos=request.FILES.getlist('photos')
         )
         # if not client.objects.filter(pk=request.POST.get("cod_cli")).exists():
         if 'photos' in request.FILES:
@@ -281,6 +280,7 @@ def edit_work_order(request, id):
             data = datetime.now().date().strftime("%Y-%m-%d")
             valor = request.POST.get("total")
             movimento = 'entrada'
+            tipo_pgto=request.POST.get("modo_pgto")
 
             finances = Finance(
                 obs=obs,
@@ -288,7 +288,8 @@ def edit_work_order(request, id):
                 data=data,
                 valor=valor,
                 movimento=movimento,
-                hora = time_br
+                hora = time_br,
+                tipo_pgto=tipo_pgto,
             )
             finances.save()
 

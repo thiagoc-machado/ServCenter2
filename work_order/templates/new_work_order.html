@@ -307,11 +307,11 @@
             <label for="modo_pgto" class="form-label">Modo de Pagamento</label>
             <select name="modo_pgto" class="form-select" value="{{modo_pgto}}">
                 <option selected>Dinheiro</option>
-                <option>Cartão de crédito</option>
-                <option>Cartão de débito</option>
                 <option>PIX</option>
-                <option>Transferencia</option>
-                <option>outros</option>
+                <option>Crédito</option>
+                <option>Débito</option>
+                <option>Depósito</option>
+                <option>Boleto</option>
             </select>
         </div>
 
@@ -347,7 +347,7 @@
   </form>
   <div class="col-1">
     <a href="{% url 'work_order' %}" id="canc_btn" type="submit" class="btn btn-danger">cancelar</a>
-  </div
+  </div>
 </div>
 <script src="{% static 'work_order/js/script.js'%}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/accounting.js/0.4.1/accounting.min.js"></script>
