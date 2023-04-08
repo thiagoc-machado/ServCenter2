@@ -49,6 +49,7 @@ def new_work_order(request):
         hora = datetime.now().time()
         data = datetime.now().date().strftime("%Y-%m-%d")
 
+
         return render(request, 'new_work_order.html', {'list_client': list_client,
                                                        'list_employee': list_employee,
                                                        'list_service': list_service,
