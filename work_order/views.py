@@ -13,6 +13,8 @@ import pytz
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.utils import ImageReader
+from reportlab.lib.pagesizes import A4
+from reportlab.lib.units import mm
 
 br_tz = pytz.timezone('America/Sao_Paulo')
 time_br = datetime.now(br_tz).time()
@@ -46,7 +48,6 @@ def new_work_order(request):
             tipo = ""
         hora = datetime.now().time()
         data = datetime.now().date().strftime("%Y-%m-%d")
-        print(data)
 
         return render(request, 'new_work_order.html', {'list_client': list_client,
                                                        'list_employee': list_employee,
@@ -323,86 +324,220 @@ def cupon(request, id):
     
     config = Config.objects.get(id=2)
     order = work_order_model.objects.get(id=id)
-    
-    nome = order.cod_cli.nome
-    whatsapp = order.whatsapp
-    data_entrada = order.data_entrada.strftime("%Y-%m-%d")
-    hora_entrada = order.data_entrada.strftime("%H:%M")
-    cod_os = order.pk
-    cod_cli = order.cod_cli.pk
-    cod_tec = order.cod_tec
-    cod_ser = order.cod_ser
-    cod_user = order.cod_user
-    whatsapp = order.whatsapp
-    obs_cli = order.obs_cli
-    produto = order.produto
-    marca = order.marca
-    modelo = order.modelo
-    serie = order.serie
-    condicao = order.condicao
-    acessorios = order.acessorios
-    defeito = order.defeito
-    obs_ser = order.obs_ser
-    solucao = order.solucao
-    preco = order.preco
-    desconto = order.desconto
-    acressimo = order.acressimo
-    total = order.total
-    modo_pgto = order.modo_pgto
-    data_alteracao = order.data_alteracao
-    pgto_adiantado = order.pgto_adiantado
-    os_finalizada = order.os_finalizada
 
-    
-    
-    
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = 'inline; filename="coupon.pdf"'
 
     # Define as informações do cupom
-    store_name = config.nome_fantasia
-    store_address = config.endereco
-    store_phone = config.telefone
-    customer_name = 'Nome do Cliente'
-    date = '01/01/2023'
-    items = [
-        {'description': 'Item 1', 'price': 10.00},
-        {'description': 'Item 2', 'price': 20.00},
-        {'description': 'Item 3', 'price': 30.00},
-    ]
-    total = sum(item['price'] for item in items)
+    company_name = config.nome_empresa
+    company_address = f'{config.endereco}, {config.numero}'
+    company_city = f'{config.cidade}, {config.estado}'
+    company_phone = f'Tel: {config.telefone}'
+    company_whastapp = f'Whatsapp: {config.whatsapp}'
+    customer_name = order.cod_cli.nome
+    customer_whatsapp = order.whatsapp
+    customer_os = order.pk
+    
+    customer_data_entrada = order.data_entrada.strftime("%d-%m-%Y")
+    #customer_data_saida = (order.data_alteracao)
+    customer_data_saida = datetime.now().date().strftime("%d-%m-%y")
+     
+    service_details = f'{order.cod_ser.nome}'
+    line1 = f'Produto: {order.produto}'
+    line2 = f'Marca: {order.marca}'
+    line3 = f'Modelo: {order.modelo}'
+    line4 = f'Série: {order.serie}'
+    line5 = f'Condição: {order.condicao}'
+    line6 = f'Acessórios: {order.acessorios}'
+    line7 = f'Defeito: {order.defeito}'
+    line8 = f'Observação: {order.obs_cli}'
+    line9 = f'Solução: {order.solucao}'
+    line10 = f'Preço: R$ {order.preco},00'
+    line11 = f'Desconto: R$ {order.desconto},00'
+    line12 = f'Acréscimo: R$ {order.acressimo},00'
+    if order.pgto_adiantado == True:
+        line13 = f'Serviço pago'
+    else:
+        line13 = f''
+    total = f'Total: {order.total}'
+
 
     # Cria um objeto PDF com o ReportLab
-    pdf = canvas.Canvas(response, pagesize=letter)
+    # Cria um objeto PDF com o ReportLab
+    buffer = BytesIO()
+    pdf = canvas.Canvas(buffer, pagesize=(80, 250)) # alterado para 80x250
 
-    # Adiciona o logotipo da loja
-    # logo_path = 'path/to/logo.png'
-    # logo = ImageReader(logo_path)
-    # pdf.drawImage(logo, 50, 700, width=150, height=150)
+    #Adiciona a logo da empresa
+    photo_path = config.logo1
+    photo = ImageReader(photo_path)
+    width, height = photo.getSize()
+    ratio = width / height
+    pdf.drawImage(photo, 10, 230, width=50, height=50/ratio) # alterado posição Y para 230
 
-    # Adiciona as informações da loja
-    pdf.drawString(220, 750, store_name)
-    pdf.drawString(50, 735, store_address)
-    pdf.drawString(50, 720, store_phone)
+    # Adiciona as informações da empresa
+    pdf.setFont('Helvetica', 4)
+    pdf.drawString(5, 220, company_name) 
+    pdf.drawString(5, 215, company_address) 
+    pdf.drawString(5, 210, company_city)
+    pdf.drawString(5, 205, company_phone) 
+    pdf.drawString(5, 200, company_whastapp) 
+    pdf.line(0, 195, 200, 195)
 
-    # Adiciona as informações do cliente e do cupom
-    pdf.drawString(50, 650, 'Nome do Cliente: {}'.format(customer_name))
-    pdf.drawString(50, 635, 'Data: {}'.format(date))
-    pdf.line(50, 620, 550, 620)
-
-    # Adiciona os itens do cupom
-    y = 600
-    for item in items:
-        pdf.drawString(50, y, item['description'])
-        pdf.drawString(350, y, '{:.2f}'.format(item['price']))
-        y -= 20
+    # Adiciona as informações do cliente e do serviço
+    pdf.setFont('Helvetica-Bold', 4)
+    pdf.drawString(5, 185, 'OS: {}'.format(customer_os)) 
+    pdf.drawString(5, 180, 'Nome: {}'.format(customer_name)) 
+    pdf.drawString(5, 175, 'Tel: {}'.format(customer_whatsapp)) 
+    pdf.drawString(5, 170, 'Entrada: {}'.format(customer_data_entrada)) 
+    pdf.drawString(5, 165, 'Impressão: {}'.format(customer_data_saida)) 
+    pdf.line(0, 160, 200, 160)
+    pdf.setFont('Helvetica', 4)
+    
+    
+    pdf.drawString(5, 150, 'Detalhes do Produto:')
+    pdf.drawString(5, 145, service_details)
+    pdf.drawString(5, 140, line1)
+    pdf.drawString(5, 135, line2)
+    pdf.drawString(5, 130, line3)
+    pdf.drawString(5, 125, line4)
+    pdf.drawString(5, 120, line5)
+    pdf.drawString(5, 115, line6)
+    pdf.drawString(5, 110, line7)
+    pdf.drawString(5, 105, line8)
+    pdf.line(0, 100, 200, 100)
+    pdf.drawString(5, 90, 'Detalhes do Serviço:')
+    pdf.drawString(5, 85, line9)
+    pdf.drawString(5, 80, line10)
+    pdf.drawString(5, 75, line11)
+    pdf.drawString(5, 70, line12)
+    pdf.line(0, 60, 200, 60)
 
     # Adiciona o total do cupom
-    pdf.line(50, y - 10, 550, y - 10)
-    pdf.drawString(350, y - 30, 'Total: {:.2f}'.format(total))
+    pdf.setFont('Helvetica-Bold', 7)
+    pdf.drawString(5, 45, f'{line13}')
+    pdf.drawString(5, 35, f'{total}') # alterado posição Y para 45
+
+
 
     # Fecha o objeto PDF
     pdf.showPage()
     pdf.save()
+
+    # Converte o PDF para uma string de bytes
+    buffer.seek(0)
+    pdf_data = buffer.getvalue()
+
+    # Retorna a resposta HTTP com o PDF como conteúdo
+    response = HttpResponse(pdf_data, content_type='application/pdf')
+    response['Content-Disposition'] = 'inline; filename="coupon.pdf"'
+    return response
+
+def print(request, id):
+    
+    config = Config.objects.get(id=2)
+    order = work_order_model.objects.get(id=id)
+
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'inline; filename="coupon.pdf"'
+
+    # Define as informações do cupom
+    company_name = config.nome_empresa
+    company_address = f'{config.endereco}, {config.numero}'
+    company_city = f'{config.cidade}, {config.estado}'
+    company_phone = f'Tel: {config.telefone}'
+    company_whatsapp = f'Whatsapp: {config.whatsapp}'
+    customer_name = order.cod_cli.nome
+    customer_whatsapp = order.whatsapp
+    customer_os = order.pk
+
+    if order.os_finalizada == True:
+        customer_final = 'Finalizada'
+    else:
+        customer_final = 'Aberta'
+    
+    customer_data_entrada = order.data_entrada.strftime("%d-%m-%Y")
+    customer_data_saida = datetime.now().date().strftime("%d-%m-%y")
+     
+    service_details = f'{order.cod_ser.nome}'
+    line1 = f'Produto: {order.produto}'
+    line2 = f'Marca: {order.marca}'
+    line3 = f'Modelo: {order.modelo}'
+    line4 = f'Série: {order.serie}'
+    line5 = f'Condição: {order.condicao}'
+    line6 = f'Acessórios: {order.acessorios}'
+    line7 = f'Defeito: {order.defeito}'
+    line8 = f'Observação: {order.obs_cli}'
+    line9 = f'Solução: {order.solucao}'
+    line10 = f'Preço: R$ {order.preco},00'
+    line11 = f'Desconto: R$ {order.desconto},00'
+    line12 = f'Acréscimo: R$ {order.acressimo},00'
+    if order.pgto_adiantado == True:
+        line13 = f'Serviço pago'
+    else:
+        line13 = f'Serviço não pago'
+    total = f'Total: {order.total}'
+
+    # Cria um objeto PDF com o ReportLab
+    buffer = BytesIO()
+    pdf = canvas.Canvas(buffer, pagesize=A4)
+
+    #Adiciona a logo da empresa
+    photo_path = config.logo1
+    photo = ImageReader(photo_path)
+    width, height = photo.getSize()
+    ratio = width / height
+    pdf.drawImage(photo, 20*mm, 270*mm, width=150, height=150/ratio)
+
+    # Adiciona as informações da empresa
+    pdf.setFont('Helvetica', 8)
+    pdf.drawCentredString(105*mm, 280*mm, company_name)
+    pdf.drawCentredString(105*mm, 275*mm, company_address)
+    pdf.drawCentredString(105*mm, 270*mm, company_city)
+    pdf.drawCentredString(105*mm, 265*mm, company_phone)
+    pdf.drawCentredString(105*mm, 260*mm, company_whatsapp) 
+
+    # Adiciona as informações do cliente e do serviço
+    pdf.setFont('Helvetica-Bold', 8)
+    pdf.drawRightString(190*mm, 280*mm, f'OS: {customer_os}')
+    pdf.drawRightString(190*mm, 275*mm, f'Data de entrada: {customer_data_entrada}')
+    pdf.drawRightString(190*mm, 270*mm, f'Data de saída: {customer_data_saida}')
+    pdf.drawRightString(190*mm, 265*mm, f'Os {customer_final}')
+    pdf.drawRightString(190*mm, 260*mm, line13)
+    
+    pdf.setFont('Helvetica', 8)
+    pdf.drawString(20*mm, 250*mm, f'Cliente: {customer_name}')
+    pdf.drawString(20*mm, 245*mm, f'Whatsapp: {customer_whatsapp}')
+    pdf.drawString(20*mm, 240*mm, f'Serviço: {service_details}')
+    pdf.setFont('Helvetica-Bold', 8)
+    pdf.drawString(90*mm, 250*mm, line1)
+    pdf.drawString(90*mm, 245*mm, line2)
+    pdf.drawString(90*mm, 240*mm, line3)
+    pdf.drawString(90*mm, 235*mm, line4)
+    pdf.drawString(90*mm, 230*mm, line5)
+    pdf.drawString(90*mm, 225*mm, line6)
+    pdf.drawString(90*mm, 220*mm, line7)
+    pdf.drawString(90*mm, 215*mm, line8)
+    pdf.drawString(90*mm, 210*mm, line9)
+    pdf.setFont('Helvetica', 8)
+    pdf.drawRightString(190*mm, 250*mm, line10)
+    pdf.drawRightString(190*mm, 245*mm, line11)
+    pdf.drawRightString(190*mm, 240*mm, line12)
+    pdf.setFont('Helvetica-Bold', 8)
+    pdf.drawRightString(190*mm, 235*mm, line13)
+    pdf.setFont('Helvetica-Bold', 10)
+    pdf.drawRightString(190*mm, 230*mm, total)
+
+    # Fecha o objeto PDF
+    pdf.showPage()
+    pdf.save()
+
+    # Define o tamanho do buffer
+    buffer.seek(0)
+
+    # Define o conteúdo do arquivo como o buffer
+    response.write(buffer.getvalue())
+
+    # Fecha o buffer
+    buffer.close()
 
     return response

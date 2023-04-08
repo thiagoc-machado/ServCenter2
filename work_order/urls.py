@@ -9,4 +9,5 @@ urlpatterns = [
     path('edit_work_order/<int:id>', views.edit_work_order, name="edit_work_order"),
     path('del_work_order/<int:id>', views.del_work_order, name="del_work_order"),
     path('cupon/<int:id>', views.cupon, name="cupon"),
+    path('print/<int:id>', views.print, name="print"),
 ]
