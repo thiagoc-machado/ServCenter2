@@ -18,10 +18,17 @@
   <div class="alert {{message.tags}}">{{message}}</div>
   {% endfor %} {% endif %}
 
-  <div class="col-sm-12">
+  <div class="col-sm-1">
     <form method="post" action="{% url 'backup_download' %}">
       {% csrf_token %}
       <a href="{% url 'backup_download' %}" class="btn btn-success">Download Backup</a>
+    </form>
+    <br/>
+  </div>
+  <div class="col-sm-1">
+    <form method="post" action="{% url 'backup_download' %}">
+      {% csrf_token %}
+      <a href="{% url 'export_to_excel' %}" class="btn btn-success">Exportar para excel</a>
     </form>
     <br/>
   </div>

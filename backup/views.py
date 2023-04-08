@@ -11,6 +11,9 @@ from django.contrib.messages import constants
 from django.core import management
 from io import StringIO
 import zipfile
+from wsgiref.util import FileWrapper
+import pandas as pd
+import sqlite3
 
 @user_passes_test(lambda u: u.is_superuser)
 def backup(request):
@@ -112,3 +115,37 @@ def restore(request):
         messages.add_message(request, constants.ERROR,
                              'Nenhum arquivo de backup enviado!')
     return redirect('backup')
+
+def export_to_excel(request):
+    # Connect to SQLite database
+    conn = sqlite3.connect('nome_do_banco_de_dados.db')
+
+    # Get list of table names
+    cursor = conn.cursor()
+    cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
+    table_names = cursor.fetchall()
+    cursor.close()
+
+    # Create a Pandas Excel writer
+    writer = pd.ExcelWriter('backup.xlsx', engine='xlsxwriter')
+
+    # Loop through tables and add to Excel file
+    for table_name in table_names:
+        # Create a DataFrame from table in SQLite database
+        df = pd.read_sql_query(f"SELECT * FROM {table_name[0]}", conn)
+
+        # Add DataFrame to Excel writer
+        df.to_excel(writer, sheet_name=table_name[0], index=False)
+
+    # Close Excel writer
+    writer.close()
+
+    # Close database connection
+    conn.close()
+
+    # Send Excel file as a download
+    file_path = os.path.abspath('backup.xlsx')
+    with open(file_path, 'rb') as file:
+        response = HttpResponse(file, content_type='application/vnd.ms-excel')
+        response['Content-Disposition'] = f'attachment; filename={os.path.basename(file_path)}'
+    return response

@@ -2,12 +2,10 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseBadRequest
 from datetime import date
-from datetime import time, datetime, timedelta
+from datetime import datetime
 from finance.models import Finance
-import pytz
 from pytz import timezone as tz
-import re
-from django.db.models import Sum
+
 
 def get_today_values():
     today = datetime.now(tz('America/Sao_Paulo')).date()
@@ -35,6 +33,7 @@ def get_values_by_hour():
 def dashboard(request):
     if request.method == "GET":
         today = date.today()
+
         finance = Finance.objects.filter(data=today)
         qtd = finance.count()
         values_by_hour = get_values_by_hour()
@@ -60,7 +59,7 @@ def dashboard(request):
                                                   'finance_minus': finance_minus,
                                                   'finance_total': finance_total,
                                                   'qtd': qtd,
-                                                  'values_by_hour': values_by_hour,
+                                                  'values_by_hour': values_by_hour
                                                   })
 
     else:

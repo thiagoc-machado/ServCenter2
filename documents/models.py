@@ -1,6 +1,9 @@
 from django.db import models
+from django import forms
 
-
+# class Documents(forms.Form):
+#     arquivo = forms.FileField()
+    
 class Documents(models.Model):
     documento = models.CharField(max_length=100, blank=True, null=True)
     texto = models.TextField(blank=True, null=True)
