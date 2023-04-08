@@ -5,7 +5,7 @@ from django.contrib import messages
 from django.contrib.messages import constants
 from .models import Employees
 from django.contrib.auth.decorators import user_passes_test
-
+import pandas as pd
 
 @user_passes_test(lambda u: u.is_superuser)
 def employees(request):
@@ -168,3 +168,23 @@ def del_employees(request, cod):
     messages.add_message(request, constants.SUCCESS,
                          'Employeese apagado com sucesso')
     return redirect('employees')
+
+@user_passes_test(lambda u: u.is_superuser)
+def employees_xlrx(request):
+    # Pegar os dados da tabela workorders
+    workorders = Employees.objects.all()
+
+    # Converter os dados para um DataFrame do Pandas
+    df = pd.DataFrame(list(workorders.values()))
+
+    # Configurar o nome do arquivo de download
+    filename = 'workorders.xlsx'
+
+    # Configurar o tipo de resposta HTTP
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = f'attachment; filename="{filename}"'
+
+    # Gerar o arquivo Excel usando o Pandas e salvar no objeto HttpResponse
+    df.to_excel(response, index=False)
+
+    return response

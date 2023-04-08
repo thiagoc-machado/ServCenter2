@@ -11,6 +11,7 @@ from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth.decorators import login_required
 import pytz
 from openpyxl import Workbook
+import pandas as pd
 
 br_tz = pytz.timezone('America/Sao_Paulo')
 time_br = datetime.now(br_tz).time()
@@ -310,33 +311,39 @@ def del_finance(request, id):
 
 
 @user_passes_test(lambda u: u.is_superuser)
-def exportar_xlsx(request):
-    # Obter dados filtrados da tabela
-    finance = Finance.objects.filter(...)
+def finance_xlrx(request, id):
+    today = datetime.now().date()
+    if id == 1:
+        finance = Finance.objects.filter(data=today)
+        print('dia')
+    elif id == 2:
+        start_of_week = today - timedelta(days=today.weekday())
+        finance = Finance.objects.filter(data__gte=start_of_week)
+        print('semana')
+    elif id == 3:
+        start_of_month = today.replace(day=1)
+        finance = Finance.objects.filter(data__gte=start_of_month)
+        print('mês')
+    elif id == 4:
+        year = date.today().year
+        finance = Finance.objects.filter(data__year=year)
+        print('ano')
+    else:
+        finance = Finance.objects.all()
+        print('todos')
+        
+        
+    # Converter os dados para um DataFrame do Pandas
+    df = pd.DataFrame(list(finance.values()))
 
-    # Criar um novo arquivo xlsx
-    wb = Workbook()
+    # Configurar o nome do arquivo de download
+    filename = 'workorders.xlsx'
 
-    # Obter a planilha ativa (worksheet)
-    ws = wb.active
-
-    # Adicionar cabeçalho para a planilha
-    ws.append(['Data', 'Valor'])
-
-    # Adicionar dados filtrados à planilha
-    for dado in finance:
-        ws.append([dado.data, dado.valor])
-
-    # Configurar o nome do arquivo de saída
-    filename = 'financeiro.xlsx'
-
-    # Definir o tipo de conteúdo da resposta HTTP
+    # Configurar o tipo de resposta HTTP
     response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-
-    # Definir o cabeçalho da resposta HTTP para anexar o arquivo xlsx
     response['Content-Disposition'] = f'attachment; filename="{filename}"'
 
-    # Salvar o arquivo xlsx na resposta HTTP
-    wb.save(response)
+    # Gerar o arquivo Excel usando o Pandas e salvar no objeto HttpResponse
+    df.to_excel(response, index=False)
 
     return response

@@ -5,6 +5,8 @@ from django.contrib.messages import constants
 from django.contrib.auth.decorators import login_required
 from .models import client, User
 from django.shortcuts import redirect
+import pandas as pd
+from django.contrib.auth.decorators import user_passes_test
 
 
 @login_required
@@ -185,3 +187,23 @@ def edit_client(request, cod_cli):
             return redirect('clients')
     else:
         return HttpResponseBadRequest('Invalid request method')
+
+@user_passes_test(lambda u: u.is_superuser)
+def clientes_xlr(request):
+    # Pegar os dados da tabela workorders
+    workorders = client.objects.all()
+
+    # Converter os dados para um DataFrame do Pandas
+    df = pd.DataFrame(list(workorders.values()))
+
+    # Configurar o nome do arquivo de download
+    filename = 'clientes.xlsx'
+
+    # Configurar o tipo de resposta HTTP
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = f'attachment; filename="{filename}"'
+
+    # Gerar o arquivo Excel usando o Pandas e salvar no objeto HttpResponse
+    df.to_excel(response, index=False)
+
+    return response

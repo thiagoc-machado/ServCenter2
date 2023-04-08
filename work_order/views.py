@@ -15,9 +15,12 @@ from reportlab.lib.pagesizes import letter
 from reportlab.lib.utils import ImageReader
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.units import mm
+import pandas as pd
+from django.contrib.auth.decorators import user_passes_test
 
 br_tz = pytz.timezone('America/Sao_Paulo')
 time_br = datetime.now(br_tz).time()
+
 
 @login_required
 def work_order(request):
@@ -36,7 +39,7 @@ def new_work_order(request):
         list_employee = Employees.objects.all()
         list_service = Services.objects.all()
         list_client = client.objects.all()
-        user=request.user
+        user = request.user
 
         try:
             service = Services.objects.get(cod=id)
@@ -48,7 +51,6 @@ def new_work_order(request):
             tipo = ""
         hora = datetime.now().time()
         data = datetime.now().date().strftime("%Y-%m-%d")
-
 
         return render(request, 'new_work_order.html', {'list_client': list_client,
                                                        'list_employee': list_employee,
@@ -86,7 +88,7 @@ def new_work_order(request):
         else:
             message = False
             client_obj = client.objects.get(pk=cod_cli_str)
-    
+
         work_orders = work_order_model(
             # Services.objects.get(cod=id)
             cod_cli=client_obj,
@@ -117,7 +119,7 @@ def new_work_order(request):
         )
         # if not client.objects.filter(pk=request.POST.get("cod_cli")).exists():
         if 'photos' in request.FILES:
-        # percorre cada imagem enviada
+            # percorre cada imagem enviada
             for photo in request.FILES.getlist('photos'):
                 # cria um objeto image para cada imagem enviada
                 image_obj = image(
@@ -126,8 +128,7 @@ def new_work_order(request):
                 )
                 image_obj.save()
         work_orders.save()
-        
-        
+
         if pgto_adiantado == True and request.POST.get("total") != '':
 
             finances = Finance.objects.all()
@@ -137,7 +138,7 @@ def new_work_order(request):
             data = datetime.now().date().strftime("%Y-%m-%d")
             valor = request.POST.get("total")
             movimento = 'entrada'
-            tipo_pgto=request.POST.get("modo_pgto")
+            tipo_pgto = request.POST.get("modo_pgto")
 
             finances = Finance(
                 obs=obs,
@@ -145,24 +146,24 @@ def new_work_order(request):
                 data=data,
                 valor=valor,
                 movimento=movimento,
-                hora = time_br,
+                hora=time_br,
                 tipo_pgto=tipo_pgto,
             )
             finances.save()
 
             if message == True:
                 messages.add_message(request, constants.SUCCESS,
-                                        'Nova ordem de serviço criada, novo cliente cadastrado com sucesso e pagamento lançado no financeiro')
+                                     'Nova ordem de serviço criada, novo cliente cadastrado com sucesso e pagamento lançado no financeiro')
             else:
                 messages.add_message(request, constants.SUCCESS,
-                                        'Nova ordem de serviço criada com sucesso e pagamento lançado no financeiro')
+                                     'Nova ordem de serviço criada com sucesso e pagamento lançado no financeiro')
         else:
             if message == True:
                 messages.add_message(request, constants.SUCCESS,
-                                        'Nova ordem de serviço criada e novo cliente cadastrado com sucesso')
+                                     'Nova ordem de serviço criada e novo cliente cadastrado com sucesso')
             else:
                 messages.add_message(request, constants.SUCCESS,
-                                        'Nova ordem de serviço criada com sucesso')
+                                     'Nova ordem de serviço criada com sucesso')
 
         return redirect('work_order')
     else:
@@ -185,7 +186,7 @@ def edit_work_order(request, id):
         tipo = ""
 
     if request.method == "GET":
-        
+
         order = work_order_model.objects.get(id=id)
         fotos = image.objects.filter(order_id=id)
         # print(Services.objects.get(cod=id) )
@@ -266,9 +267,9 @@ def edit_work_order(request, id):
             "pgto_adiantado") and request.POST.get("total") != '' else False
         work_orders.os_finalizada = True if request.POST.get(
             "os_finalizada") else False
-        
+
         if 'photos' in request.FILES:
-        # percorre cada imagem enviada
+            # percorre cada imagem enviada
             for photo in request.FILES.getlist('photos'):
                 # cria um objeto image para cada imagem enviada
                 image_obj = image(
@@ -276,7 +277,7 @@ def edit_work_order(request, id):
                     order=work_orders
                 )
                 image_obj.save()
-        
+
         work_orders.save()
 
         if work_order_model.objects.get(id=id).pgto_adiantado == True and request.POST.get("total") != '' and pago == False:
@@ -288,7 +289,7 @@ def edit_work_order(request, id):
             data = datetime.now().date().strftime("%Y-%m-%d")
             valor = request.POST.get("total")
             movimento = 'entrada'
-            tipo_pgto=request.POST.get("modo_pgto")
+            tipo_pgto = request.POST.get("modo_pgto")
 
             finances = Finance(
                 obs=obs,
@@ -296,7 +297,7 @@ def edit_work_order(request, id):
                 data=data,
                 valor=valor,
                 movimento=movimento,
-                hora = time_br,
+                hora=time_br,
                 tipo_pgto=tipo_pgto,
             )
             finances.save()
@@ -321,8 +322,9 @@ def del_work_order(request, id):
     return redirect('work_order')
 
 
+@ login_required
 def cupon(request, id):
-    
+
     config = Config.objects.get(id=2)
     order = work_order_model.objects.get(id=id)
 
@@ -338,11 +340,11 @@ def cupon(request, id):
     customer_name = order.cod_cli.nome
     customer_whatsapp = order.whatsapp
     customer_os = order.pk
-    
+
     customer_data_entrada = order.data_entrada.strftime("%d-%m-%Y")
-    #customer_data_saida = (order.data_alteracao)
+    # customer_data_saida = (order.data_alteracao)
     customer_data_saida = datetime.now().date().strftime("%d-%m-%y")
-     
+
     service_details = f'{order.cod_ser.nome}'
     line1 = f'Produto: {order.produto}'
     line2 = f'Marca: {order.marca}'
@@ -362,39 +364,38 @@ def cupon(request, id):
         line13 = f''
     total = f'Total: {order.total}'
 
-
     # Cria um objeto PDF com o ReportLab
     # Cria um objeto PDF com o ReportLab
     buffer = BytesIO()
-    pdf = canvas.Canvas(buffer, pagesize=(80, 250)) # alterado para 80x250
+    pdf = canvas.Canvas(buffer, pagesize=(80, 250))  # alterado para 80x250
 
-    #Adiciona a logo da empresa
+    # Adiciona a logo da empresa
     photo_path = config.logo1
     photo = ImageReader(photo_path)
     width, height = photo.getSize()
     ratio = width / height
-    pdf.drawImage(photo, 10, 230, width=50, height=50/ratio) # alterado posição Y para 230
+    pdf.drawImage(photo, 10, 230, width=50, height=50 /
+                  ratio)  # alterado posição Y para 230
 
     # Adiciona as informações da empresa
     pdf.setFont('Helvetica', 4)
-    pdf.drawString(5, 220, company_name) 
-    pdf.drawString(5, 215, company_address) 
+    pdf.drawString(5, 220, company_name)
+    pdf.drawString(5, 215, company_address)
     pdf.drawString(5, 210, company_city)
-    pdf.drawString(5, 205, company_phone) 
-    pdf.drawString(5, 200, company_whastapp) 
+    pdf.drawString(5, 205, company_phone)
+    pdf.drawString(5, 200, company_whastapp)
     pdf.line(0, 195, 200, 195)
 
     # Adiciona as informações do cliente e do serviço
     pdf.setFont('Helvetica-Bold', 4)
-    pdf.drawString(5, 185, 'OS: {}'.format(customer_os)) 
-    pdf.drawString(5, 180, 'Nome: {}'.format(customer_name)) 
-    pdf.drawString(5, 175, 'Tel: {}'.format(customer_whatsapp)) 
-    pdf.drawString(5, 170, 'Entrada: {}'.format(customer_data_entrada)) 
-    pdf.drawString(5, 165, 'Impressão: {}'.format(customer_data_saida)) 
+    pdf.drawString(5, 185, 'OS: {}'.format(customer_os))
+    pdf.drawString(5, 180, 'Nome: {}'.format(customer_name))
+    pdf.drawString(5, 175, 'Tel: {}'.format(customer_whatsapp))
+    pdf.drawString(5, 170, 'Entrada: {}'.format(customer_data_entrada))
+    pdf.drawString(5, 165, 'Impressão: {}'.format(customer_data_saida))
     pdf.line(0, 160, 200, 160)
     pdf.setFont('Helvetica', 4)
-    
-    
+
     pdf.drawString(5, 150, 'Detalhes do Produto:')
     pdf.drawString(5, 145, service_details)
     pdf.drawString(5, 140, line1)
@@ -416,9 +417,7 @@ def cupon(request, id):
     # Adiciona o total do cupom
     pdf.setFont('Helvetica-Bold', 7)
     pdf.drawString(5, 45, f'{line13}')
-    pdf.drawString(5, 35, f'{total}') # alterado posição Y para 45
-
-
+    pdf.drawString(5, 35, f'{total}')  # alterado posição Y para 45
 
     # Fecha o objeto PDF
     pdf.showPage()
@@ -433,8 +432,10 @@ def cupon(request, id):
     response['Content-Disposition'] = 'inline; filename="coupon.pdf"'
     return response
 
+
+@ login_required
 def print(request, id):
-    
+
     config = Config.objects.get(id=2)
     order = work_order_model.objects.get(id=id)
 
@@ -455,10 +456,10 @@ def print(request, id):
         customer_final = 'Finalizada'
     else:
         customer_final = 'Aberta'
-    
+
     customer_data_entrada = order.data_entrada.strftime("%d-%m-%Y")
     customer_data_saida = datetime.now().date().strftime("%d-%m-%y")
-     
+
     service_details = f'{order.cod_ser.nome}'
     line1 = f'Produto: {order.produto}'
     line2 = f'Marca: {order.marca}'
@@ -482,7 +483,7 @@ def print(request, id):
     buffer = BytesIO()
     pdf = canvas.Canvas(buffer, pagesize=A4)
 
-    #Adiciona a logo da empresa
+    # Adiciona a logo da empresa
     photo_path = config.logo1
     photo = ImageReader(photo_path)
     width, height = photo.getSize()
@@ -495,16 +496,18 @@ def print(request, id):
     pdf.drawCentredString(105*mm, 275*mm, company_address)
     pdf.drawCentredString(105*mm, 270*mm, company_city)
     pdf.drawCentredString(105*mm, 265*mm, company_phone)
-    pdf.drawCentredString(105*mm, 260*mm, company_whatsapp) 
+    pdf.drawCentredString(105*mm, 260*mm, company_whatsapp)
 
     # Adiciona as informações do cliente e do serviço
     pdf.setFont('Helvetica-Bold', 8)
     pdf.drawRightString(190*mm, 280*mm, f'OS: {customer_os}')
-    pdf.drawRightString(190*mm, 275*mm, f'Data de entrada: {customer_data_entrada}')
-    pdf.drawRightString(190*mm, 270*mm, f'Data de saída: {customer_data_saida}')
+    pdf.drawRightString(
+        190*mm, 275*mm, f'Data de entrada: {customer_data_entrada}')
+    pdf.drawRightString(
+        190*mm, 270*mm, f'Data de saída: {customer_data_saida}')
     pdf.drawRightString(190*mm, 265*mm, f'Os {customer_final}')
     pdf.drawRightString(190*mm, 260*mm, line13)
-    
+
     pdf.setFont('Helvetica', 8)
     pdf.drawString(20*mm, 250*mm, f'Cliente: {customer_name}')
     pdf.drawString(20*mm, 245*mm, f'Whatsapp: {customer_whatsapp}')
@@ -540,5 +543,27 @@ def print(request, id):
 
     # Fecha o buffer
     buffer.close()
+
+    return response
+
+
+@user_passes_test(lambda u: u.is_superuser)
+def wo_xlr(request):
+    # Pegar os dados da tabela workorders
+    workorders = work_order_model.objects.all()
+
+    # Converter os dados para um DataFrame do Pandas
+    df = pd.DataFrame(list(workorders.values()))
+
+    # Configurar o nome do arquivo de download
+    filename = 'ordem de servicos.xlsx'
+
+    # Configurar o tipo de resposta HTTP
+    response = HttpResponse(
+        content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = f'attachment; filename="{filename}"'
+
+    # Gerar o arquivo Excel usando o Pandas e salvar no objeto HttpResponse
+    df.to_excel(response, index=False)
 
     return response

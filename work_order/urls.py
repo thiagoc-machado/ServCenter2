@@ -10,4 +10,5 @@ urlpatterns = [
     path('del_work_order/<int:id>', views.del_work_order, name="del_work_order"),
     path('cupon/<int:id>', views.cupon, name="cupon"),
     path('print/<int:id>', views.print, name="print"),
+    path('wo_xlr/', views.wo_xlr, name="wo_xlr"),
 ]

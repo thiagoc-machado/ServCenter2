@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.models import Group
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth.hashers import make_password
+import pandas as pd
 
 @user_passes_test(lambda u: u.is_superuser)
 def users(request):
@@ -170,3 +171,24 @@ def del_users(request, id):
         messages.add_message(request, constants.SUCCESS,
                             'Usuário apagado com sucesso')
         return redirect('users')
+
+# @user_passes_test(lambda u: u.is_superuser)
+# def users_xlr(request):
+#     # Pegar os dados da tabela workorders
+#     workorders = User.objects.all()
+
+#     # Converter os dados para um DataFrame do Pandas
+#     df = pd.DataFrame(list(workorders.values()))
+
+#     # Configurar o nome do arquivo de download
+#     filename = 'ordem de servicos.xlsx'
+
+#     # Configurar o tipo de resposta HTTP
+#     response = HttpResponse(
+#         content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+#     response['Content-Disposition'] = f'attachment; filename="{filename}"'
+
+#     # Gerar o arquivo Excel usando o Pandas e salvar no objeto HttpResponse
+#     df.to_excel(response, index=False)
+
+#     return response
