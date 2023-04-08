@@ -1,13 +1,13 @@
 body {
   padding-top: 90px;
-  background: #ebebeb;
+  background: #d9d9d9;
 }
 .panel-login {
   border-color: #ccc;
   padding: 10px;
   border-radius: 20px;
-  background: linear-gradient(145deg, #f6f6f6, #cfcfcf);
-  box-shadow: 8px 8px 8px #cdcdcd, -8px -8px 8px #ffffff;
+  background: linear-gradient(145deg, #ffffff, #e1e1e1);
+  box-shadow: 18px 18px 18px #cdcdcd, -18px -18px 18px #f5f5f5;
 }
 /* .panel-login > .panel-heading {
   color: #5d0055;
@@ -30,6 +30,8 @@ body {
 }
 #logo {
   max-width: 150px;
+  
+
 }
 /* .panel-login > .panel-heading hr {
   margin-top: 10px;
