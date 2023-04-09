@@ -186,3 +186,6 @@ DBBACKUP_DIRECTORY = os.path.join(MEDIA_ROOT, 'backup')
 
 CSRF_TRUSTED_ORIGINS = ['https://servcenter.up.railway.app', 'http://127.0.0.1', 'http://localhost']
 
+X_FRAME_OPTIONS = 'SAMEORIGIN'
+
+
