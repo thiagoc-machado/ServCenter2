@@ -55,3 +55,18 @@ $(document).ready(function () {
     $(table).DataTable();
   });
 });
+
+
+var spinner = document.getElementById("spinner");
+// Exibe o spinner quando a página estiver carregando
+window.addEventListener("beforeunload", function(event) {
+  spinner.classList.remove("d-none");
+  document.title = "ServCenter - Carregando...";
+  event.preventDefault();
+});
+
+// Oculta o spinner quando a página estiver carregada
+window.addEventListener("load", function(event) {
+  spinner.classList.add("d-none");
+  document.title = "ServCenter"; // Altere para o título correto da sua página
+});
