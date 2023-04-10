@@ -19,40 +19,12 @@ time_br = datetime.now(br_tz).time()
 
 @user_passes_test(lambda u: u.is_superuser)
 def finance(request):
-    finance = Finance.objects.all()
-    finance_date = Finance.objects.all().order_by('data').first()
-    if finance_date is not None:
-        finance_date = finance_date.data
-    
-    finance_sum = 0
-    finance_min = 0
-    for finances in Finance.objects.all():
-        if finances.movimento == 'entrada':
-            valor = finances.valor
-            if valor is not None:
-                valor = float(valor.replace('R$', '').replace(',', '.'))
-                finance_sum += valor
-        elif finances.movimento == 'saída':
-            valor = finances.valor
-            if valor is not None:
-                valor = float(valor.replace('R$', '').replace(',', '.'))
-                finance_min -= valor
-    finance_minus = finance_min * -1
-    finance_tot = finance_sum - finance_minus
-    finance_total = round(finance_tot, 2)
-    
-    finance_date = ''
-    latest_finance = Finance.objects.all().order_by('data').last()
+    total_dia = diario()[0]
+    total_sem = semanal()[0]
+    total_mes = mensal()[0]
+    total_ano = anual()[0]
 
-    if latest_finance:
-        finance_date = latest_finance.data.strftime('%d/%m/%Y')
-
-    return render(request, 'finance.html', {'finance': finance,
-                                            'finance_sum': finance_sum,
-                                            'finance_minus': finance_minus,
-                                            'finance_total': finance_total,
-                                            'finance_date': finance_date
-                                            })
+    return render(request, 'finance.html', {'total_dia': total_dia, 'total_sem': total_sem, 'total_mes': total_mes, 'total_ano': total_ano})
 
 
 @login_required
@@ -219,6 +191,7 @@ def new_finance(request):
         valor = round(float(request.POST.get("inputValor")), 2)
         movimento = 'entrada'
         tipo_pgto = request.POST.get("inputTipoPgto")
+        categoria_in = request.POST.get("inputCategoria_in")
 
         finances = Finance(
             obs=obs,
@@ -227,12 +200,13 @@ def new_finance(request):
             valor='R$ ' + str(valor),
             movimento=movimento,
             tipo_pgto=tipo_pgto,
-            hora =  time_br,
+            hora=time_br,
+            categoria_in=categoria_in,
         )
         finances.save()
         messages.add_message(request, constants.SUCCESS,
                              'Nova entrada cadastrada com sucesso')
-    return redirect('finance')
+    return redirect('finance_dia')
 
 
 @login_required
@@ -249,7 +223,7 @@ def new_finance_out(request):
         valor = round(float(request.POST.get("inputValor")), 2)
         movimento = 'saída'
         tipo_pgto = request.POST.get("inputTipoPgto")
-        
+
         finances = Finance(
             obs=obs,
             nome=nome,
@@ -331,8 +305,7 @@ def finance_xlrx(request, id):
     else:
         finance = Finance.objects.all()
         print('todos')
-        
-        
+
     # Converter os dados para um DataFrame do Pandas
     df = pd.DataFrame(list(finance.values()))
 
@@ -340,10 +313,109 @@ def finance_xlrx(request, id):
     filename = 'workorders.xlsx'
 
     # Configurar o tipo de resposta HTTP
-    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response = HttpResponse(
+        content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
     response['Content-Disposition'] = f'attachment; filename="{filename}"'
 
     # Gerar o arquivo Excel usando o Pandas e salvar no objeto HttpResponse
     df.to_excel(response, index=False)
 
     return response
+
+
+def diario():
+    today = date.today()
+    finance = Finance.objects.filter(data=today)
+    qtd = finance.count()
+    finance_sum = 0
+    finance_min = 0
+    for finances in Finance.objects.filter(data=today):
+        if finances.movimento == 'entrada':
+            valor = finances.valor
+            if valor is not None:
+                valor = float(valor.replace('R$', '').replace(',', '.'))
+                finance_sum += valor
+        elif finances.movimento == 'saída':
+            valor = finances.valor
+            if valor is not None:
+                valor = float(valor.replace('R$', '').replace(',', '.'))
+                finance_min -= valor
+
+    finance_minus = finance_min * -1
+    finance_tot = finance_sum - finance_minus
+    finance_total = round(finance_tot, 2)
+    return (finance_total, finance_minus, finance_sum, qtd)
+
+
+def semanal():
+    today = datetime.now().date()
+    start_of_week = today - timedelta(days=today.weekday())
+
+    finance = Finance.objects.filter(data__gte=start_of_week)
+    qtd = finance.count()
+    finance_sum = 0
+    finance_min = 0
+    for finances in Finance.objects.filter(data__gte=start_of_week):
+        if finances.movimento == 'entrada':
+            valor = finances.valor
+            if valor is not None:
+                valor = float(valor.replace('R$', '').replace(',', '.'))
+                finance_sum += valor
+        elif finances.movimento == 'saída':
+            valor = finances.valor
+            if valor is not None:
+                valor = float(valor.replace('R$', '').replace(',', '.'))
+                finance_min -= valor
+    finance_minus = finance_min * -1
+    finance_tot = finance_sum - finance_minus
+    finance_total = round(finance_tot, 2)
+
+    return (finance_total, finance_minus, finance_sum, qtd)
+
+
+def mensal():
+    today = date.today()
+    start_of_month = today.replace(day=1)
+
+    finance = Finance.objects.filter(data__gte=start_of_month)
+    qtd = finance.count()
+    finance_sum = 0
+    finance_min = 0
+    for finances in Finance.objects.filter(data__gte=start_of_month):
+        if finances.movimento == 'entrada':
+            valor = finances.valor
+            if valor is not None:
+                valor = float(valor.replace('R$', '').replace(',', '.'))
+                finance_sum += valor
+        elif finances.movimento == 'saída':
+            valor = finances.valor
+            if valor is not None:
+                valor = float(valor.replace('R$', '').replace(',', '.'))
+                finance_min -= valor
+    finance_minus = finance_min * -1
+    finance_tot = finance_sum - finance_minus
+    finance_total = round(finance_tot, 2)
+    return (finance_total, finance_minus, finance_sum, qtd)
+
+
+def anual():
+    year = date.today().year
+    finance = Finance.objects.filter(data__year=year)
+    qtd = finance.count()
+    finance_sum = 0
+    finance_min = 0
+    for finances in Finance.objects.filter(data__year=year):
+        if finances.movimento == 'entrada':
+            valor = finances.valor
+            if valor is not None:
+                valor = float(valor.replace('R$', '').replace(',', '.'))
+                finance_sum += valor
+        elif finances.movimento == 'saída':
+            valor = finances.valor
+            if valor is not None:
+                valor = float(valor.replace('R$', '').replace(',', '.'))
+                finance_min -= valor
+    finance_minus = finance_min * -1
+    finance_tot = finance_sum - finance_minus
+    finance_total = round(finance_tot, 2)
+    return (finance_total, finance_minus, finance_sum, qtd)

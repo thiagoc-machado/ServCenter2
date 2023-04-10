@@ -14,6 +14,7 @@ import zipfile
 from wsgiref.util import FileWrapper
 import pandas as pd
 import sqlite3
+from datetime import datetime
 
 @user_passes_test(lambda u: u.is_superuser)
 def backup(request):
@@ -22,12 +23,14 @@ def backup(request):
     management.call_command('dbbackup', stdout=response)
     response = FileResponse(response, as_attachment=True)
     context = {'backup_success': True}
+    delete_backup_files()
     return render(request, 'backup.html', context)
 
 
 @user_passes_test(lambda u: u.is_superuser)
 def backup_download(request):
-    backup_filename = 'backup.zip'
+    data = datetime.now().strftime('%d %m %Y')
+    backup_filename = f'backup {data}.zip'
     backup_path = os.path.join(settings.MEDIA_ROOT, 'backup', backup_filename)
     print ('Backup [*      ]')
     # cria um arquivo zip que inclui o arquivo de backup e a pasta de mídia
@@ -58,13 +61,13 @@ def backup_download(request):
             messages.add_message(request, constants.SUCCESS,
                                  'Backup realizado com sucesso!')
             print ('Backup [*******]')
+
             return response
         
     else:
         messages.add_message(request, constants.ERROR,
                              'Erro ao efetuar o backup, Nenhum arquivo encontrado!')
         return redirect('backup')
-
 
 @user_passes_test(lambda u: u.is_superuser)
 def restore(request):
@@ -116,7 +119,9 @@ def restore(request):
                              'Nenhum arquivo de backup enviado!')
     return redirect('backup')
 
+@user_passes_test(lambda u: u.is_superuser)
 def export_to_excel(request):
+
     # Connect to SQLite database
     conn = sqlite3.connect('nome_do_banco_de_dados.db')
 
@@ -149,3 +154,14 @@ def export_to_excel(request):
         response = HttpResponse(file, content_type='application/vnd.ms-excel')
         response['Content-Disposition'] = f'attachment; filename={os.path.basename(file_path)}'
     return response
+
+@user_passes_test(lambda u: u.is_superuser)
+def delete_backup_files():
+    backup_folder = os.path.join(settings.MEDIA_ROOT, 'backup')
+    for filename in os.listdir(backup_folder):
+        file_path = os.path.join(backup_folder, filename)
+        try:
+            if os.path.isfile(file_path):
+                os.remove(file_path)
+        except Exception as e:
+            print(f'Erro ao excluir o arquivo: {file_path}. Erro: {e}')

@@ -59,15 +59,21 @@ def view_documents(request, id):
         tipo_arquivo, encoding = mimetypes.guess_type(doc.arquivo.path) 
     else:
         tipo_arquivo = ''
+     
+    print(tipo_arquivo)
     
-    is_image = tipo_arquivo.startswith('image/')
-
-    context = {
-        'doc': doc,
-        'is_image': is_image,
-        'tipo_arquivo': tipo_arquivo
-    }
-    return render(request, 'view_documents.html', context)
+    if 'image' in str(tipo_arquivo) or tipo_arquivo == 'application/pdf' or  tipo_arquivo == 'text/plain':
+        is_image = tipo_arquivo.startswith('image/')
+        context = {
+            'doc': doc,
+            'is_image': is_image,
+            'tipo_arquivo': tipo_arquivo
+        }
+        return render(request, 'view_documents.html', context)
+    
+    messages.add_message(request, constants.ERROR,
+                         'Arquivo não suportado')
+    return redirect('documents')
 
 
 def del_documents(request, id):

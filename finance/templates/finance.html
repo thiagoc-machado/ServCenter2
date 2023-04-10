@@ -4,7 +4,7 @@
 {% endblock %} {% block 'main' %}
 <div class="row">
   <div id="cad_cli_tit">
-    <a>Financeiro</a> 
+    <a>Dashboard Financeiro</a> 
   </div>
 
   {% if messages %}
@@ -12,28 +12,35 @@
   {% for message in messages %}
   <div class="alert {{message.tags}}">{{message}}</div>
   {% endfor %} {% endif %}
-
-  <div class="col-md-3 mb-3">
+  
+  <div class="col-md-2 mb-3">
     <div class="card bg-success text-white">
       <h5 class="fin-card-header">
-        Entradas Totais
-        <h3 id="fin-subt2">R$ {{finance_sum}}</h3>
+        Entradas de hoje
+        <h3 id="fin-subt2">R$ {{total_dia}}0</h3>
       </h5>
     </div>
   </div>
-  <div class="col-md-3 mb-3">
-    <div class="card bg-danger text-white">
+  <div class="col-md-2 mb-3">
+    <div class="card bg-success text-white">
       <h5 class="fin-card-header">
-        Saídas Totais
-        <h3 id="fin-subt3">R$ {{ finance_minus }}</h3>
+        Entradas desta semana
+        <h3 id="fin-subt2">R$ {{total_sem}}0</h3>
       </h5>
     </div>
   </div>
-  <div class="col-md-3 mb-3">
-    <div class="card bg-primary text-white">
+  <div class="col-md-2 mb-3">
+    <div class="card bg-success text-white">
       <h5 class="fin-card-header">
-        Total desde {{finance_date}}
-        <h3 id="fin-subt3">R$ {{ finance_total }}</h3>
+        Entradas deste mês
+        <h3 id="fin-subt2">R$ {{total_mes}}0</h3>
+      </h5>
+    </div>
+  </div><div class="col-md-2 mb-3">
+    <div class="card bg-success text-white">
+      <h5 class="fin-card-header">
+        Entradas deste ano
+        <h3 id="fin-subt2">R$ {{total_ano}}0</h3>
       </h5>
     </div>
   </div>
@@ -74,7 +81,7 @@
   <div class="col-md-12 mb-3">
     <div class="card">
       <div class="card-header">
-        <span><i class="bi bi-table me-2"></i></span> Cilentes
+        <span><i class="bi bi-table me-2"></i></span> Ultimos lançamentos de hoje
       </div>
       <div class="card-body">
         <div id="table_cli" class="table-responsive">

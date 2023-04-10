@@ -3,7 +3,7 @@ from . import views
 from .views import *
 
 urlpatterns = [
-    path('', views.finance_dia, name="finance"),
+    path('', views.finance, name="finance"),
     path('finance_dia/', views.finance_dia, name="finance_dia"),
     path('finance_sem/', views.finance_sem, name="finance_sem"),
     path('finance_mes/', views.finance_mes, name="finance_mes"),

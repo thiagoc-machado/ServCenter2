@@ -74,12 +74,22 @@
                 Menu
               </div>
             </li>
-            <li>
-              <a href="{% url 'finance' %}" class="nav-link px-3">
-                <span class="me-2"><i class="bi bi-cash"></i></span>
-                <span>Financeiro</span>
-              </a>
-            </li>
+            {% if user.is_superuser %}
+              <li>
+                  <a href="{% url 'finance' %}" class="nav-link px-3">
+                      <span class="me-2"><i class="bi bi-cash"></i></span>
+                      <span>Financeiro</span>
+                  </a>
+              </li>
+            {% else %}
+                <li>
+                    <a href="{% url 'finance_dia' %}" class="nav-link px-3">
+                        <span class="me-2"><i class="bi bi-cash"></i></span>
+                        <span>Financeiro diário</span>
+                    </a>
+                </li>
+            {% endif %}
+
             <li>
               <a href="{% url 'clients' %}" class="nav-link px-3">
                 <span class="me-2"><i class="bi bi-person-circle"></i></span>
