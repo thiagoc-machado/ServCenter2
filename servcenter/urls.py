@@ -20,7 +20,7 @@ urlpatterns = [
     path('backup/', include("backup.urls")),
     path('config/', include("config.urls")),
     path('documents/', include("documents.urls")),
-]
+]# + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 def handle_404(request, exception):

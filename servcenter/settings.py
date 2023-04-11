@@ -5,11 +5,12 @@ from django.contrib.messages import constants
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-*)%z&*kcnam%+$qna&squd&eul+wm@7^lnxfc0ex2*f!j2hv4e'
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
+    'whitenoise.runserver_nostatic',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -129,8 +130,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-SECURE_CONTENT_TYPE_NOSNIFF = True
 
 MESSAGE_TAGS = {
     constants.DEBUG: 'alert-primary',
