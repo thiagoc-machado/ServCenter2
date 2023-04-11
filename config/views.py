@@ -6,9 +6,9 @@ from finance.models import Categoria_in, Categoria_out
 
 @user_passes_test(lambda u: u.is_superuser)
 def config(request):
-    configs = Config.objects.all()
     categoriaIn = Categoria_in.objects.all()
     categoriaOut = Categoria_out.objects.all()
+    configs = Config.objects.all()
     return render(request, 'config.html', {'configs': configs, 'categorias_in': categoriaIn, 'categorias_out': categoriaOut})
 
 
