@@ -34,17 +34,51 @@
                 <p>Bairro: {{ config.bairro }}</p>
                 <p>Cidade: {{ config.cidade }}/{{ config.estado }}</p>
                 <p>CEP: {{ config.cep }}</p>
-                {% if config.logo1 %}
-                    <img src="{{ config.logo1 }}" alt="Logo 1" width = "200px">
-                {% endif %}
-                {% if config.logo2 %}
-                    <img src="{{ config.logo2 }}" alt="Logo 2" width = "200px" >
-                {% endif %}
                 <p>Obs: {{ config.obs }}</p>
                 <p>Data: {{ config.data }}</p>
+                {% if config.logo1 %}
+                    <img src="{{ config.logo1.url }}" alt="Logo 1" width = "200px">
+                {% endif %}
+                {% if config.logo2 %}
+                    <img src="{{ config.logo2.url }}" alt="Logo 2" width = "200px" >
+                {% endif %}
+                
             </li>
         {% endfor %}
     </ul>
+
+    <div class='categoria'>
+      <i>Nova categorias de entradas no caixa</i>
+      <form action="{% url 'categoria_in' %}" method="POST">
+          {% csrf_token %}
+          <input type="text" name="categoriasIn" placeholder="Nome da categoria">
+          <input type="submit" value="Salvar">
+      </form>
+      <ul>
+        {% for categoria in categorias_in %}
+        <li>
+          <p>{{ categoria.categoria }}</p>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+    <div class='categoria'>
+      <i>Nova categoria de saídas no caixa</i>
+      <form action="{% url 'categoria_out' %}" method="POST">
+          {% csrf_token %}
+          <input type="text" name="categoriasOut" placeholder="Nome da categoria">
+          <input type="submit" value="Salvar">
+      </form>
+      <ul>
+        {% for categoria in categorias_out %}
+        <li>
+          <p>{{ categoria.categoria }}</p>
+        </li>
+        {% endfor %}
+        <ul>
+    </div>
+  </div>
+
 {% endblock %}
         
     </div>

@@ -1,17 +1,16 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect       
 from django.contrib.messages import constants
-from django.shortcuts import redirect
 from django.contrib import messages
 from django.http import HttpResponse, HttpResponseBadRequest
-from finance.models import Finance
-from django.db.models import Sum
-from django.utils import timezone
+from finance.models import Finance, Categoria_in, Categoria_out
 from datetime import date, datetime, timedelta
-from django.contrib.auth.decorators import user_passes_test
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import user_passes_test, login_required
 import pytz
-from openpyxl import Workbook
 import pandas as pd
+from django.utils import timezone
+import matplotlib.pyplot as plt
+from io import BytesIO
+import base64
 
 br_tz = pytz.timezone('America/Sao_Paulo')
 time_br = datetime.now(br_tz).time()
@@ -19,12 +18,28 @@ time_br = datetime.now(br_tz).time()
 
 @user_passes_test(lambda u: u.is_superuser)
 def finance(request):
+    today = date.today()
+    finance = Finance.objects.filter(data=today)
     total_dia = diario()[0]
+    entrada_dia = diario()[1]
+    saida_dia = diario()[2]
     total_sem = semanal()[0]
+    entrada_sem = semanal()[1]
+    saida_sem = semanal()[2]
     total_mes = mensal()[0]
+    entrada_mes = mensal()[1]
+    saida_mes = mensal()[2]
     total_ano = anual()[0]
+    saida_ano = anual()[1]
+    entrada_ano = anual()[2]
+    chart = finance_chart()
+    chart_ano = finance_year_chart()
+    pie_mes_in = pie_chart_mes_in()
+    pie_ano_in = pie_chart_ano_in()
+    pie_mes_out = pie_chart_mes_out()
+    pie_ano_out = pie_chart_ano_out()
 
-    return render(request, 'finance.html', {'total_dia': total_dia, 'total_sem': total_sem, 'total_mes': total_mes, 'total_ano': total_ano})
+    return render(request, 'finance.html', {'finance': finance,'total_dia': total_dia, 'total_sem': total_sem, 'total_mes': total_mes, 'total_ano': total_ano, 'saida_ano': saida_ano, 'entrada_ano': entrada_ano, 'entrada_dia': entrada_dia, 'saida_dia': saida_dia, 'entrada_sem': entrada_sem, 'saida_sem': saida_sem, 'entrada_mes': entrada_mes, 'saida_mes': saida_mes, 'dates':chart[0], 'entradas' : chart[1], 'saidas' : chart[2], 'months':chart_ano[0], 'entradas' : chart_ano[1], 'saidas' : chart_ano[2], 'pie_mes_in': pie_mes_in, 'pie_ano_in': pie_ano_in, 'pie_mes_out': pie_mes_out, 'pie_ano_out': pie_ano_out})
 
 
 @login_required
@@ -182,7 +197,8 @@ def new_finance(request):
     if request.method == "GET":
         data = date.today().strftime('%Y-%m-%d')
         finances = Finance.objects.all()
-        return render(request, 'new_finance.html', {'finances': finances, 'data': data})
+        categoria = Categoria_in.objects.all()
+        return render(request, 'new_finance.html', {'finances': finances, 'data': data, 'categoria': categoria})
 
     elif request.method == "POST":
         obs = request.POST.get("inputObs")
@@ -191,7 +207,7 @@ def new_finance(request):
         valor = round(float(request.POST.get("inputValor")), 2)
         movimento = 'entrada'
         tipo_pgto = request.POST.get("inputTipoPgto")
-        categoria_in = request.POST.get("inputCategoria_in")
+        categoria = request.POST.get("inputCategoria_in")
 
         finances = Finance(
             obs=obs,
@@ -201,9 +217,11 @@ def new_finance(request):
             movimento=movimento,
             tipo_pgto=tipo_pgto,
             hora=time_br,
-            categoria_in=categoria_in,
+            categoria = categoria,
         )
         finances.save()
+        
+        
         messages.add_message(request, constants.SUCCESS,
                              'Nova entrada cadastrada com sucesso')
     return redirect('finance_dia')
@@ -214,7 +232,8 @@ def new_finance_out(request):
     if request.method == "GET":
         data = date.today().strftime('%Y-%m-%d')
         finances = Finance.objects.all()
-        return render(request, 'new_finance_out.html', {'finances': finances, 'data': data})
+        categoria = Categoria_out.objects.all()
+        return render(request, 'new_finance_out.html', {'finances': finances, 'data': data, 'categoria': categoria})
 
     elif request.method == "POST":
         obs = request.POST.get("inputObs")
@@ -223,6 +242,7 @@ def new_finance_out(request):
         valor = round(float(request.POST.get("inputValor")), 2)
         movimento = 'saída'
         tipo_pgto = request.POST.get("inputTipoPgto")
+        categoria = request.POST.get("inputCategoria_out")
 
         finances = Finance(
             obs=obs,
@@ -232,11 +252,15 @@ def new_finance_out(request):
             movimento=movimento,
             hora=time_br,
             tipo_pgto=tipo_pgto,
+            categoria=categoria,
         )
+        
         finances.save()
+        
+
         messages.add_message(request, constants.SUCCESS,
                              'Nova saída cadastrada com sucesso')
-    return redirect('finance')
+    return redirect('finance_dia')
 
 
 @login_required
@@ -419,3 +443,200 @@ def anual():
     finance_tot = finance_sum - finance_minus
     finance_total = round(finance_tot, 2)
     return (finance_total, finance_minus, finance_sum, qtd)
+
+def finance_chart():
+    now = timezone.now()
+    start_month = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+    end_month = (start_month + timedelta(days=32)).replace(day=1) - timedelta(days=1)
+    finance_data = Finance.objects.filter(data__range=[start_month, end_month])
+    
+    data = {}
+    for finance in finance_data:
+        day = finance.data.day
+        valor = float(finance.valor.replace(',', '.').replace('R$','').replace(' ','')) if finance.valor else 0
+        if finance.movimento == 'entrada':
+            data[day] = data.get(day, {'entradas': 0, 'saidas': 0})
+            data[day]['entradas'] += valor
+        elif finance.movimento == 'saída':
+            data[day] = data.get(day, {'entradas': 0, 'saidas': 0})
+            data[day]['saidas'] += valor
+    
+    dates = [{'day': day} for day in range(1, end_month.day + 1)]
+    entradas = [data.get(day, {'entradas': 0})['entradas'] for day in range(1, end_month.day + 1)]
+    saidas = [data.get(day, {'saidas': 0})['saidas'] for day in range(1, end_month.day + 1)]
+    
+    return (dates, entradas, saidas)
+
+
+def finance_year_chart():
+    now = timezone.now()
+    start_year = now.replace(month=1, day=1, hour=0, minute=0, second=0, microsecond=0)
+    end_year = start_year.replace(month=12, day=31) + timedelta(days=1)
+    finance_data = Finance.objects.filter(data__range=[start_year, end_year])
+    
+    data = {}
+    for finance in finance_data:
+        month = finance.data.month
+        valor = float(finance.valor.replace(',', '.').replace('R$','').replace(' ','')) if finance.valor else 0
+        if finance.movimento == 'entrada':
+            data[month] = data.get(month, {'entradas': 0, 'saidas': 0})
+            data[month]['entradas'] += valor
+        elif finance.movimento == 'saída':
+            data[month] = data.get(month, {'entradas': 0, 'saidas': 0})
+            data[month]['saidas'] += valor
+    
+    months = [{'month': month} for month in range(1, 13)]
+    entradas = [data.get(month, {'entradas': 0})['entradas'] for month in range(1, 13)]
+    saidas = [data.get(month, {'saidas': 0})['saidas'] for month in range(1, 13)]
+    
+    return  (months, entradas, saidas)
+
+def pie_chart_mes_in():
+    today = date.today()
+    month = today.month
+    finances = Finance.objects.filter(data__month=month).filter(movimento='entrada')
+    
+    # Cria um dicionário para armazenar a soma dos gastos de cada categoria
+    expenses_by_category = {}
+    for finance in finances:
+        category = finance.categoria
+        if category in expenses_by_category:
+            expenses_by_category[category] += float(finance.valor.replace(',', '.').replace('R$','').replace(' ','')) if finance.valor else 0
+        else:
+            expenses_by_category[category] = float(finance.valor.replace(',', '.').replace('R$','').replace(' ','')) if finance.valor else 0
+    
+    # Cria uma lista com as categorias e outra com os valores correspondentes
+    categories = list(expenses_by_category.keys())
+    values = list(expenses_by_category.values())
+    
+    # Cria um gráfico de pizza
+    plt.figure(figsize=(8,6))
+    plt.pie(values, labels=categories, autopct='%1.1f%%')
+    plt.title(f'Entadas por categoria - Mês {month}')
+    plt.legend()
+    
+    # Converte o gráfico em uma imagem
+    from io import StringIO
+    import base64
+    buffer = BytesIO()
+    plt.savefig(buffer, format='png')
+    buffer.seek(0)
+    image_png = buffer.getvalue()
+    buffer.close()
+    graphic = base64.b64encode(image_png)
+    graphic = graphic.decode('utf-8')
+
+    return graphic
+
+def pie_chart_ano_in():
+    today = date.today()
+    year = today.year
+    finances = Finance.objects.filter(data__year=year).filter(movimento='entrada')
+    
+    # Cria um dicionário para armazenar a soma dos gastos de cada categoria
+    expenses_by_category = {}
+    for finance in finances:
+        category = finance.categoria
+        if category in expenses_by_category:
+            expenses_by_category[category] += float(finance.valor.replace(',', '.').replace('R$','').replace(' ','')) if finance.valor else 0
+        else:
+            expenses_by_category[category] = float(finance.valor.replace(',', '.').replace('R$','').replace(' ','')) if finance.valor else 0
+    
+    # Cria uma lista com as categorias e outra com os valores correspondentes
+    categories = list(expenses_by_category.keys())
+    values = list(expenses_by_category.values())
+    
+    # Cria um gráfico de pizza
+    plt.figure(figsize=(8,6))
+    plt.pie(values, labels=categories, autopct='%1.1f%%')
+    plt.title(f'Entadas por categoria - Ano {year}')
+    plt.legend()
+    
+    # Converte o gráfico em uma imagem
+    from io import StringIO
+    import base64
+    buffer = BytesIO()
+    plt.savefig(buffer, format='png')
+    buffer.seek(0)
+    image_png = buffer.getvalue()
+    buffer.close()
+    graphic = base64.b64encode(image_png)
+    graphic = graphic.decode('utf-8')
+
+    return graphic
+
+def pie_chart_mes_out():
+    today = date.today()
+    month = today.month
+    finances = Finance.objects.filter(data__month=month).filter(movimento='saída')
+    
+    # Cria um dicionário para armazenar a soma dos gastos de cada categoria
+    expenses_by_category = {}
+    for finance in finances:
+        category = finance.categoria
+        if category in expenses_by_category:
+            expenses_by_category[category] += float(finance.valor.replace(',', '.').replace('R$','').replace(' ','')) if finance.valor else 0
+        else:
+            expenses_by_category[category] = float(finance.valor.replace(',', '.').replace('R$','').replace(' ','')) if finance.valor else 0
+    
+    # Cria uma lista com as categorias e outra com os valores correspondentes
+    categories = list(expenses_by_category.keys())
+    values = list(expenses_by_category.values())
+    
+    # Cria um gráfico de pizza
+    plt.figure(figsize=(8,6))
+    plt.pie(values, labels=categories, autopct='%1.1f%%')
+    plt.title(f'Gastos por categoria - Mês {month}')
+    plt.legend()
+    
+    # Converte o gráfico em uma imagem
+    from io import StringIO
+    import base64
+    buffer = BytesIO()
+    plt.savefig(buffer, format='png')
+    buffer.seek(0)
+    image_png = buffer.getvalue()
+    buffer.close()
+    graphic = base64.b64encode(image_png)
+    graphic = graphic.decode('utf-8')
+
+    return graphic
+
+def pie_chart_ano_out():
+    today = date.today()
+    year = today.year
+    finances = Finance.objects.filter(data__year=year).filter(movimento='saída')
+    
+    # Cria um dicionário para armazenar a soma dos gastos de cada categoria
+    expenses_by_category = {}
+    for finance in finances:
+        category = finance.categoria
+        if category in expenses_by_category:
+            expenses_by_category[category] += float(finance.valor.replace(',', '.').replace('R$','').replace(' ','')) if finance.valor else 0
+        else:
+            expenses_by_category[category] = float(finance.valor.replace(',', '.').replace('R$','').replace(' ','')) if finance.valor else 0
+    
+    # Cria uma lista com as categorias e outra com os valores correspondentes
+    categories = list(expenses_by_category.keys())
+    values = list(expenses_by_category.values())
+    
+    # Cria um gráfico de pizza
+    plt.figure(figsize=(8,6))
+    plt.pie(values, labels=categories, autopct='%1.1f%%')
+    plt.title(f'Gastos por categoria - Ano {year}')
+    plt.legend()
+    
+    
+    
+    # Converte o gráfico em uma imagem
+    from io import StringIO
+    import base64
+    buffer = BytesIO()
+    plt.savefig(buffer, format='png')
+    buffer.seek(0)
+    image_png = buffer.getvalue()
+    buffer.close()
+    graphic = base64.b64encode(image_png)
+    graphic = graphic.decode('utf-8')
+
+    return graphic

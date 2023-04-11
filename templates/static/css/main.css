@@ -81,6 +81,7 @@ button {
   margin-top: -1rem;
   margin-left: -1rem;
   z-index: 9999;
+  color:#f0f8ff
 }
 @media (min-width: 992px) {
   body {

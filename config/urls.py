@@ -9,6 +9,8 @@ if Config.objects.exists():
     urlpatterns = [
         path('', views.config, name="config"),
         path('edit/', views.edit_config, name="edit_config"),
+        path('categoria_in/', views.categoria_in, name="categoria_in"),
+        path('categoria_out/', views.categoria_out, name="categoria_out"),
     ] 
 else:
     urlpatterns = [

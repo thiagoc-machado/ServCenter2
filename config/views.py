@@ -1,13 +1,15 @@
-from django.shortcuts import render
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .forms import ConfigForm
 from .models import Config
 from django.contrib.auth.decorators import user_passes_test
+from finance.models import Categoria_in, Categoria_out
 
 @user_passes_test(lambda u: u.is_superuser)
 def config(request):
     configs = Config.objects.all()
-    return render(request, 'config.html', {'configs': configs})
+    categoriaIn = Categoria_in.objects.all()
+    categoriaOut = Categoria_out.objects.all()
+    return render(request, 'config.html', {'configs': configs, 'categorias_in': categoriaIn, 'categorias_out': categoriaOut})
 
 
 @user_passes_test(lambda u: u.is_superuser)
@@ -28,4 +30,22 @@ def edit_config(request):
         if form.is_valid():
             form.save()
     return render(request, 'edit_config.html', {'form': form})
+
+def categoria_in(request):
+    if request.method == 'POST':
+        categoria = request.POST.get('categoriasIn')
+        cat = Categoria_in(categoria=categoria)
+        cat.save()
+        return redirect('config')
+
+def categoria_out(request):
+    if request.method == 'POST':
+        categoria = request.POST.get('categoriasOut')
+        cat = Categoria_out(categoria=categoria)
+        cat.save()
+        return redirect('config')
+  
+    
+
+    
 

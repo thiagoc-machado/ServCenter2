@@ -1,7 +1,14 @@
-.row {
+.all {
   margin-left: 0px;
   margin-right: 0px;
   padding: 0;
+}
+.items{
+  display: flex;
+  justify-content: space-between;
+}
+.cards_fin, .fin-subt2 {
+  font-size: 2vh;
 }
 #cad_cli_tit {
   margin-left: 10px;
@@ -9,11 +16,13 @@
   font-size: 2vh;
   font-weight: 500;
 }
+.cards_fin{
+  text-align: center;
+}
 
 #btn_nc,
 #btn_ac {
-  font-size: 1vh;
-  margin: 0px 0px 5px 12px;
+  width: 100%;
 }
 #btn_ed,
 #btn_ap,
@@ -22,6 +31,12 @@
   font-size: 1vh;
   padding: 3px;
   justify-content: center;
+}
+.actions_bar{
+  display: flex;
+  flex-direction: row;
+  gap:5px;
+  margin-left: 5px;
 }
 #table_cli {
   font-size: 1.5vh;
@@ -39,8 +54,13 @@
   font-weight: 100;
 }
 
+.grfc{
+
+  background-color: aliceblue;
+}
+
 @media (min-width: 992px) {
-  .row {
+  .all {
     margin-left: 200px;
     margin-right: 1.5px;
   }
@@ -62,10 +82,15 @@
     text-align: center;
     padding: 5px;
   }
-  #fin-subt3,
-  #fin-subt2 {
+  .fin-subt3,
+  .fin-subt2 {
     text-align: center;
   }
+  .cards_fin{
+    text-align: center;
+  }
+
+
   #btn_ed,
   #btn_ap,
   #btn_wz {
@@ -92,4 +117,12 @@
   #acoes_th {
     width: 120px;
   }
+  .btn-block {
+    width: 100%;
+}
+.items{
+  display: flex;
+  justify-content: space-between;
+}
+
 }

@@ -9,8 +9,22 @@ class Finance(models.Model):
     movimento = models.CharField(max_length=10, null=True, blank=True)
     hora = models.TimeField(blank=True)
     tipo_pgto = models.CharField(max_length=10, null=True, blank=True)
-    categoria_in = models.CharField(max_length=10, null=True, blank=True)
-    categoria_out = models.CharField(max_length=10, null=True, blank=True)
+    categoria = models.CharField(max_length=10, null=True, blank=True)
+
 
     def __str__(self):
         return self.nome
+
+
+class Categoria_in(models.Model):
+    categoria = models.CharField(max_length=10, null=True, blank=True)
+
+    def __str__(self):
+        return self.categoria
+
+
+class Categoria_out(models.Model):
+    categoria = models.CharField(max_length=10, null=True, blank=True)
+
+    def __str__(self):
+        return self.categoria
