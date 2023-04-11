@@ -14,279 +14,312 @@
   {% endfor %} {% endif %}
 
   <div class="col-md-3 mb-3">
-    <div class="card bg-primary text-white">
-      <h5 class="fin-card-header">
-        <i class="cards_fin">Diario</i>
-        <div class="items">
-          <i class="cards_fin">Entradas</i>
-          <h5 class="fin-subt2">R$ {{entrada_dia}}0</h5>
-        </div>
-        <div class="items">
-          <i class="cards_fin">Saídas</i>
-          <h5 class="fin-subt2">R$ {{saida_dia}}0</h5>
-        </div>
-        <div class="items">
-          <i class="cards_fin">Total</i>
-          <h4 class="fin-subt2">R$ {{total_dia}}0</h4>
-        </div>
-      </h5>
-    </div>
+    <a href="{% url 'finance_dia' %}">
+      <div class="card bg-primary text-white">
+        <h5 class="fin-card-header">
+          <i class="cards_fin">Diario</i>
+          <div class="items">
+            <i class="cards_fin">Entradas</i>
+            <h5 class="fin-subt2">R$ {{entrada_dia}}0</h5>
+          </div>
+          <div class="items">
+            <i class="cards_fin">Saídas</i>
+            <h5 class="fin-subt2">R$ {{saida_dia}}0</h5>
+          </div>
+          <div class="items">
+            <i class="cards_fin">Total</i>
+            <h4 class="fin-subt2">R$ {{total_dia}}0</h4>
+          </div>
+        </h5>
+      </div>
+    </a>
   </div>
   <div class="col-md-3 mb-3">
-    <div class="card bg-primary text-white">
-      <h5 class="fin-card-header">
-        <i class="cards_fin">Semanal</i>
-        <div class="items">
-          <i class="cards_fin">Entradas</i>
-          <h5 class="fin-subt2">R$ {{entrada_sem}}0</h5>
-        </div>
-        <div class="items">
-          <i class="cards_fin">Saídas</i>
-          <h5 class="fin-subt2">R$ {{saida_sem}}0</h5>
-        </div>
-        <div class="items">
-          <i class="cards_fin">Total</i>
-          <h4 class="fin-subt2">R$ {{total_sem}}0</h4>
-        </div>
-      </h5>
-    </div>
+    <a href="{% url 'finance_sem' %}">
+      <div class="card bg-primary text-white">
+        <h5 class="fin-card-header">
+          <i class="cards_fin">Semanal</i>
+          <div class="items">
+            <i class="cards_fin">Entradas</i>
+            <h5 class="fin-subt2">R$ {{entrada_sem}}0</h5>
+          </div>
+          <div class="items">
+            <i class="cards_fin">Saídas</i>
+            <h5 class="fin-subt2">R$ {{saida_sem}}0</h5>
+          </div>
+          <div class="items">
+            <i class="cards_fin">Total</i>
+            <h4 class="fin-subt2">R$ {{total_sem}}0</h4>
+          </div>
+        </h5>
+      </div>
+    </a>
   </div>
   <div class="col-md-3 mb-3">
-    <div class="card bg-primary text-white">
-      <h5 class="fin-card-header">
-        <i class="cards_fin">Mensal</i>
-        <div class="items">
-          <i class="cards_fin">Entradas</i>
-          <h5 class="fin-subt2">R$ {{entrada_mes}}0</h5>
-        </div>
-        <div class="items">
-          <i class="cards_fin">Saídas</i>
-          <h5 class="fin-subt2">R$ {{saida_mes}}0</h5>
-        </div>
-        <div class="items">
-          <i class="cards_fin">Total</i>
-          <h4 class="fin-subt2">R$ {{total_mes}}0</h4>
-        </div>
-      </h5>
-    </div>
+    <a href="{% url 'finance_mes' %}">
+      <div class="card bg-primary text-white">
+        <h5 class="fin-card-header">
+          <i class="cards_fin">Mensal</i>
+          <div class="items">
+            <i class="cards_fin">Entradas</i>
+            <h5 class="fin-subt2">R$ {{entrada_mes}}0</h5>
+          </div>
+          <div class="items">
+            <i class="cards_fin">Saídas</i>
+            <h5 class="fin-subt2">R$ {{saida_mes}}0</h5>
+          </div>
+          <div class="items">
+            <i class="cards_fin">Total</i>
+            <h4 class="fin-subt2">R$ {{total_mes}}0</h4>
+          </div>
+        </h5>
+      </div>
+    </a>
   </div>
   <div class="col-md-3 mb-3">
-    <div class="card bg-primary text-white">
-      <h5 class="fin-card-header">
-        <i class="cards_fin">Anual</i>
-        <div class="items">
-          <i class="cards_fin">Entradas</i>
-          <h5 class="fin-subt2">R$ {{entrada_ano}}0</h5>
-        </div>
-        <div class="items">
-          <i class="cards_fin">Saídas</i>
-          <h5 class="fin-subt2">R$ {{saida_ano}}0</h5>
-        </div>
-        <div class="items">
-          <i class="cards_fin">Total</i>
-          <h4 class="fin-subt2">R$ {{total_ano}}0</h4>
-        </div>
-      </h5>
-    </div>
+    <a href="{% url 'finance_ano' %}">
+      <div class="card bg-primary text-white">
+        <h5 class="fin-card-header">
+          <i class="cards_fin">Anual</i>
+          <div class="items">
+            <i class="cards_fin">Entradas</i>
+            <h5 class="fin-subt2">R$ {{entrada_ano}}0</h5>
+          </div>
+          <div class="items">
+            <i class="cards_fin">Saídas</i>
+            <h5 class="fin-subt2">R$ {{saida_ano}}0</h5>
+          </div>
+          <div class="items">
+            <i class="cards_fin">Total</i>
+            <h4 class="fin-subt2">R$ {{total_ano}}0</h4>
+          </div>
+        </h5>
+      </div>
+    </a>
   </div>
 
   <div class="actions_bar row">
-    <div class="col-md-2">
+    <div class="col-md-4">
       <a
         href="{% url 'new_finance' %}"
         class="btn btn-success btn-block"
-        id="btn_nc"
+        
         >Entrada avulsa no caixa</a
       >
     </div>
-    <div class="col-md-2">
+    <div class="col-md-4">
       <a
         href="{% url 'new_finance_out' %}"
         class="btn btn-danger btn-block"
-        id="btn_ac"
+
         >Saída avulsa no caixa</a
       >
     </div>
-    <div class="col-md-2">
+    <div class="col-md-4">
       <a
         href="{% url 'finance_xlrx' id=1 %}"
         class="btn btn-primary btn-block"
-        id="btn_ac"
+
         >Exportar movimentação</a
       >
     </div>
-    <div class="col-md-1">
-      <a
-        href="{% url 'finance_dia' %}"
-        class="btn btn-dark btn-block"
-        id="btn_ac"
-        >Diario</a
-      >
-    </div>
-    <div class="col-md-1">
-      <a
-        href="{% url 'finance_sem' %}"
-        class="btn btn-dark btn-block"
-        id="btn_ac"
-        >Semanal</a
-      >
-    </div>
-    <div class="col-md-1">
-      <a
-        href="{% url 'finance_mes' %}"
-        class="btn btn-dark btn-block"
-        id="btn_ac"
-        >Mensal</a
-      >
-    </div>
-    <div class="col-md-1">
-      <a
-        href="{% url 'finance_ano' %}"
-        class="btn btn-dark btn-block"
-        id="btn_ac"
-        >Anual</a
-      >
-    </div>
-    <div class="col-md-1">
-      <a
-        href="{% url 'finance_tot' %}"
-        class="btn btn-dark btn-block"
-        id="btn_ac"
-        >Total</a
-      >
-    </div>
-  </div>
 
-  <div class="col-md-12 mb-3">
-    <div class="card">
-      <div class="card-header">
-        <span><i class="bi bi-table me-2"></i></span> Ultimos lançamentos de
-        hoje
-      </div>
-      <div class="card-body">
-        <div id="table_cli" class="table-responsive">
-          <table
-            id="example"
-            class="table table-striped data-table"
-            style="width: 100%"
-          >
-            <thead>
-              <tr>
-                <th>Cod.</th>
-                <th>Obs</th>
-                <th>Nome</th>
-                <th>Valor</th>
-                <th>Data</th>
-                <th>movimento</th>
-                <th>Categoria</th>
-                <th>Tipo Pgto</th>
-                <th id="acoes_th">Ações</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for finances in finance %}
-              <tr id="fin_table">
-                <th>
-                  <a href="{% url 'edit_finance' finances.id %}"
-                    >{{ finances.id }}</a
-                  >
-                </th>
-                <th>
-                  <a href="{% url 'edit_finance' finances.id %}"
-                    >{{ finances.obs }}</a
-                  >
-                </th>
-                <th>
-                  <a href="{% url 'edit_finance' finances.id %}"
-                    >{{ finances.nome }}</a
-                  >
-                </th>
-                <th>
-                  <a href="{% url 'edit_finance' finances.id %}"
-                    >{{ finances.valor }}</a
-                  >
-                </th>
-                <th>
-                  <a href="{% url 'edit_finance' finances.id %}"
-                    >{{ finances.data }}</a
-                  >
-                </th>
-                <th>
-                  <a href="{% url 'edit_finance' finances.id %}"
-                    >{{ finances.movimento }}</a
-                  >
-                </th>
-                <th>
-                  <a href="{% url 'edit_finance' finances.id %}"
-                    >{{ finances.categoria }}</a
-                  >
-                </th>
-                <th>
-                  <a href="{% url 'edit_finance' finances.id %}"
-                    >{{ finances.tipo_pgto }}</a
-                  >
-                </th>
-                <th>
-                  <a
-                    id="btn_ed"
-                    href="{% url 'edit_finance' finances.id %}"
-                    type="button"
-                    class="btn btn-success"
-                  >
-                    <i class="bi bi-pen"></i>
-                  </a>
-                  <a
-                    href="{% url 'del_finance' finances.id %}"
-                    id="btn_ap"
-                    type="button"
-                    class="btn btn-danger delete"
-                  >
-                    <i class="bi bi-trash"></i>
-                  </a>
-                </th>
-              </tr>
-              {% endfor %}
-            </tbody>
-            <tfoot></tfoot>
-          </table>
+    <div class="col-md-12 mb-3">
+      <div class="card">
+        <div class="card-header">
+          <span><i class="bi bi-table me-2"></i></span> Ultimos lançamentos de
+          hoje
         </div>
-      </div>
-    </div>
-    <div class="col-md-12 mb-3 grfc">
-      {% block content %}
-      <div class="container">
-        <div class="row">
-          <div class="col-md-6 gfc">
-            <canvas id="myChart"></canvas>
-          </div>
-          <div class="col-md-6 gfc">
-            <canvas id="yearChart"></canvas>
+        <div class="card-body">
+          <div id="table_cli" class="table-responsive">
+            <table
+              id="example"
+              class="table table-striped data-table"
+              style="width: 100%"
+            >
+              <thead>
+                <tr>
+                  <th>Cod.</th>
+                  <th>Obs</th>
+                  <th>Nome</th>
+                  <th>Valor</th>
+                  <th>Data</th>
+                  <th>movimento</th>
+                  <th>Categoria</th>
+                  <th>Tipo Pgto</th>
+                  <th id="acoes_th">Ações</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for finances in finance %}
+                <tr id="fin_table">
+                  <th>
+                    <a href="{% url 'edit_finance' finances.id %}"
+                      >{{ finances.id }}</a
+                    >
+                  </th>
+                  <th>
+                    <a href="{% url 'edit_finance' finances.id %}"
+                      >{{ finances.obs }}</a
+                    >
+                  </th>
+                  <th>
+                    <a href="{% url 'edit_finance' finances.id %}"
+                      >{{ finances.nome }}</a
+                    >
+                  </th>
+                  <th>
+                    <a href="{% url 'edit_finance' finances.id %}"
+                      >{{ finances.valor }}</a
+                    >
+                  </th>
+                  <th>
+                    <a href="{% url 'edit_finance' finances.id %}"
+                      >{{ finances.data }}</a
+                    >
+                  </th>
+                  <th>
+                    <a href="{% url 'edit_finance' finances.id %}"
+                      >{{ finances.movimento }}</a
+                    >
+                  </th>
+                  <th>
+                    <a href="{% url 'edit_finance' finances.id %}"
+                      >{{ finances.categoria }}</a
+                    >
+                  </th>
+                  <th>
+                    <a href="{% url 'edit_finance' finances.id %}"
+                      >{{ finances.tipo_pgto }}</a
+                    >
+                  </th>
+                  <th>
+                    <a
+                      id="btn_ed"
+                      href="{% url 'edit_finance' finances.id %}"
+                      type="button"
+                      class="btn btn-success"
+                    >
+                      <i class="bi bi-pen"></i>
+                    </a>
+                    <a
+                      href="{% url 'del_finance' finances.id %}"
+                      id="btn_ap"
+                      type="button"
+                      class="btn btn-danger delete"
+                    >
+                      <i class="bi bi-trash"></i>
+                    </a>
+                  </th>
+                </tr>
+                {% endfor %}
+              </tbody>
+              <tfoot></tfoot>
+            </table>
           </div>
         </div>
       </div>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
+      <div class="col-md-12 mb-3 grfc">
+        {% block content %}
+        <div class="container">
+          <div class="row">
+            <div class="col-md-6 gfc">
+              <canvas id="myChart"></canvas>
+            </div>
+            <div class="col-md-6 gfc">
+              <canvas id="yearChart"></canvas>
+            </div>
+          </div>
+        </div>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
+      </div>
 
-    </div>
-    <script>
-      var ctx = document.getElementById('myChart').getContext('2d');
-      var myChart = new Chart(ctx, {
-          type: 'bar',
-          data: {
-              labels: [{% for date in dates %}"{{ date.day }}"{% if not forloop.last %}, {% endif %}{% endfor %}],
-              datasets: [{
-                  label: 'Entradas',
-                  data: [{% for entrada in entradas %}{{ entrada }}{% if not forloop.last %}, {% endif %}{% endfor %}],
-                  backgroundColor: 'green',
-              }, {
-                  label: 'Saídas',
-                  data: [{% for saida in saidas %}{{ saida }}{% if not forloop.last %}, {% endif %}{% endfor %}],
-                  backgroundColor: 'red',
-              }]
-          },
-          options: {
-              title: {
-                  display: true,
-                  text: 'Fluxo de caixa - Diário'
+      {% block content3 %}
+      <div class="row graph_pie_block">
+        <div class="col-md-6">
+          <img
+            src="data:image/png;base64,{{ pie_mes_in }}"
+            alt="Gráfico de pizza"
+            class="img-fluid pie_graph"
+          />
+        </div>
+        <div class="col-md-6">
+          <img
+            src="data:image/png;base64,{{ pie_ano_in }}"
+            alt="Gráfico de pizza"
+            class="img-fluid pie_graph"
+          />
+        </div>
+        <div class="col-md-6">
+          <img
+            src="data:image/png;base64,{{ pie_mes_out }}"
+            alt="Gráfico de pizza"
+            class="img-fluid pie_graph"
+          />
+        </div>
+        <div class="col-md-6">
+          <img
+            src="data:image/png;base64,{{ pie_ano_out }}"
+            alt="Gráfico de pizza"
+            class="img-fluid pie_graph"
+          />
+        </div>
+      </div>
+      {% endblock %}
+
+      <script>
+        var ctx = document.getElementById('myChart').getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: [{% for date in dates %}"{{ date.day }}"{% if not forloop.last %}, {% endif %}{% endfor %}],
+                datasets: [{
+                    label: 'Entradas',
+                    data: [{% for entrada in entradas %}{{ entrada }}{% if not forloop.last %}, {% endif %}{% endfor %}],
+                    backgroundColor: 'green',
+                }, {
+                    label: 'Saídas',
+                    data: [{% for saida in saidas %}{{ saida }}{% if not forloop.last %}, {% endif %}{% endfor %}],
+                    backgroundColor: 'red',
+                }]
+            },
+            options: {
+                title: {
+                    display: true,
+                    text: 'Fluxo de caixa - Diário'
+                  },
+                  scales: {
+                      yAxes: [{
+                          ticks: {
+                              beginAtZero: true
+                          }
+                      }]
+                  }
+              }
+          });
+      </script>
+
+      {% endblock %} {% block content2 %} {% endblock %} {% block scripts2 %}
+      <script>
+        var ctx = document.getElementById('yearChart').getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: [{% for month in months %}"{{ month.month }}"{% if not forloop.last %}, {% endif %}{% endfor %}],
+                datasets: [{
+                    label: 'Entradas',
+                    data: [{% for entrada in entradas %}{{ entrada }}{% if not forloop.last %}, {% endif %}{% endfor %}],
+                    backgroundColor: 'green',
+                }, {
+                    label: 'Saídas',
+                    data: [{% for saida in saidas %}{{ saida }}{% if not forloop.last %}, {% endif %}{% endfor %}],
+                    backgroundColor: 'red',
+                }]
+            },
+            options: {
+                title: {
+                    display: true,
+                    text: 'Fluxo de Caixa - Mensal'
                 },
                 scales: {
                     yAxes: [{
@@ -297,52 +330,10 @@
                 }
             }
         });
-    </script>
-
-    {% endblock %}
-    {% block content3 %}
-      <img src="data:image/png;base64,{{ pie_mes_in }}" alt="Gráfico de pizza">
-      <img src="data:image/png;base64,{{ pie_ano_in }}" alt="Gráfico de pizza">
-      <img src="data:image/png;base64,{{ pie_mes_out }}" alt="Gráfico de pizza">
-      <img src="data:image/png;base64,{{ pie_ano_out }}" alt="Gráfico de pizza">
-    {% endblock %}
-    {% block content2 %}
-  
-{% endblock %}
-{% block scripts2 %}
-  <script>
-    var ctx = document.getElementById('yearChart').getContext('2d');
-    var myChart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: [{% for month in months %}"{{ month.month }}"{% if not forloop.last %}, {% endif %}{% endfor %}],
-            datasets: [{
-                label: 'Entradas',
-                data: [{% for entrada in entradas %}{{ entrada }}{% if not forloop.last %}, {% endif %}{% endfor %}],
-                backgroundColor: 'green',
-            }, {
-                label: 'Saídas',
-                data: [{% for saida in saidas %}{{ saida }}{% if not forloop.last %}, {% endif %}{% endfor %}],
-                backgroundColor: 'red',
-            }]
-        },
-        options: {
-            title: {
-                display: true,
-                text: 'Fluxo de Caixa - Mensal'
-            },
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        beginAtZero: true
-                    }
-                }]
-            }
-        }
-    });
-  </script>
-{% endblock %}
+      </script>
+      {% endblock %}
+    </div>
   </div>
+  <script src="{% static 'clients/js/script.js'%}"></script>
+  {% endblock%}
 </div>
-<script src="{% static 'clients/js/script.js'%}"></script>
-{% endblock%}

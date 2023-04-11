@@ -513,7 +513,7 @@ def pie_chart_mes_in():
     plt.figure(figsize=(8,6))
     plt.pie(values, labels=categories, autopct='%1.1f%%')
     plt.title(f'Entadas por categoria - Mês {month}')
-    plt.legend()
+    plt.legend(loc='upper left', bbox_to_anchor=(0.9, 1.0))
     
     # Converte o gráfico em uma imagem
     from io import StringIO
@@ -550,7 +550,7 @@ def pie_chart_ano_in():
     plt.figure(figsize=(8,6))
     plt.pie(values, labels=categories, autopct='%1.1f%%')
     plt.title(f'Entadas por categoria - Ano {year}')
-    plt.legend()
+    plt.legend(loc='upper left', bbox_to_anchor=(0.9, 1.0))
     
     # Converte o gráfico em uma imagem
     from io import StringIO
@@ -587,7 +587,7 @@ def pie_chart_mes_out():
     plt.figure(figsize=(8,6))
     plt.pie(values, labels=categories, autopct='%1.1f%%')
     plt.title(f'Gastos por categoria - Mês {month}')
-    plt.legend()
+    plt.legend(loc='upper left', bbox_to_anchor=(0.9, 1.0))
     
     # Converte o gráfico em uma imagem
     from io import StringIO
@@ -619,12 +619,14 @@ def pie_chart_ano_out():
     # Cria uma lista com as categorias e outra com os valores correspondentes
     categories = list(expenses_by_category.keys())
     values = list(expenses_by_category.values())
+    fig, ax = plt.subplots()
     
     # Cria um gráfico de pizza
+    
     plt.figure(figsize=(8,6))
     plt.pie(values, labels=categories, autopct='%1.1f%%')
     plt.title(f'Gastos por categoria - Ano {year}')
-    plt.legend()
+    plt.legend(loc='upper left', bbox_to_anchor=(0.9, 1.0))
     
     
     
