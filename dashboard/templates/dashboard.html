@@ -6,6 +6,8 @@
 <title>Dashboard</title>
 <script>
   var values_by_hour = JSON.parse('{{ values_by_hour|safe }}');
+  var output_by_hour = JSON.parse('{{ output_by_hour|safe }}');
+  var qtd = JSON.parse('{{ qtd|safe }}');
 </script>
 <main id="main" class="mt-5 pt-3">
   <div class="container-fluid" id="cad_cli">
