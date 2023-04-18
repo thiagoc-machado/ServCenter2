@@ -23,7 +23,7 @@ def backup(request):
     management.call_command('dbbackup', stdout=response)
     response = FileResponse(response, as_attachment=True)
     context = {'backup_success': True}
-    delete_backup_files()
+    delete_backup_files(request)
     return render(request, 'backup.html', context)
 
 
@@ -156,7 +156,7 @@ def export_to_excel(request):
     return response
 
 @user_passes_test(lambda u: u.is_superuser)
-def delete_backup_files():
+def delete_backup_files(request):
     backup_folder = os.path.join(settings.MEDIA_ROOT, 'backup')
     for filename in os.listdir(backup_folder):
         file_path = os.path.join(backup_folder, filename)
