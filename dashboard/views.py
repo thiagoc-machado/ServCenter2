@@ -7,12 +7,12 @@ from finance.models import Finance
 from pytz import timezone as tz
 
 
+from django.utils import timezone
+
 def get_today_values():
-    today = datetime.now(tz('America/Sao_Paulo')).date()
-    start = tz(
-        'America/Sao_Paulo').localize(datetime.combine(today, datetime.min.time()))
-    end = tz(
-        'America/Sao_Paulo').localize(datetime.combine(today, datetime.max.time()))
+    today = timezone.localtime().date()
+    start = timezone.make_aware(datetime.combine(today, datetime.min.time()))
+    end = timezone.make_aware(datetime.combine(today, datetime.max.time()))
     return Finance.objects.filter(data__range=(start, end))
 
 
@@ -66,7 +66,7 @@ def dashboard(request):
                 if valor is not None:
                     valor = float(valor.replace('R$', '').replace(',', '.'))
                     finance_sum += valor
-            elif finances.movimento == 'saida':
+            elif finances.movimento == 'saída':
                 valor = finances.valor
                 if valor is not None:
                     valor = float(valor.replace('R$', '').replace(',', '.'))
@@ -74,10 +74,12 @@ def dashboard(request):
 
         finance_minus = finance_min * -1
         finance_total = finance_sum - finance_minus
+        
+        
         return render(request, 'dashboard.html', {'finance': finance,
-                                                  'finance_sum': finance_sum,
-                                                  'finance_minus': finance_minus,
-                                                  'finance_total': finance_total,
+                                                  'finance_sum': round(finance_sum,2),
+                                                  'finance_minus': round(finance_minus,2),
+                                                  'finance_total': round(finance_total,2),
                                                   'qtd': qtd,
                                                   'values_by_hour': values_by_hour,
                                                   'output_by_hour': output_by_hour

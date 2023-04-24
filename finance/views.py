@@ -20,18 +20,23 @@ time_br = datetime.now(br_tz).time()
 def finance(request):
     today = date.today()
     finance = Finance.objects.filter(data=today)
-    total_dia = diario()[0]
-    entrada_dia = diario()[1]
-    saida_dia = diario()[2]
-    total_sem = semanal()[0]
-    entrada_sem = semanal()[1]
-    saida_sem = semanal()[2]
-    total_mes = mensal()[0]
-    entrada_mes = mensal()[1]
-    saida_mes = mensal()[2]
-    total_ano = anual()[0]
-    saida_ano = anual()[1]
-    entrada_ano = anual()[2]
+    
+    total_dia = '{:.2f}'.format(diario()[0])
+    entrada_dia = '{:.2f}'.format(diario()[2])
+    saida_dia = '{:.2f}'.format(diario()[1])
+    
+    total_sem = '{:.2f}'.format(semanal()[0])
+    entrada_sem = '{:.2f}'.format(semanal()[2])
+    saida_sem = '{:.2f}'.format(semanal()[1])
+    
+    total_mes = '{:.2f}'.format(mensal()[0])
+    entrada_mes = '{:.2f}'.format(mensal()[2])
+    saida_mes = '{:.2f}'.format(mensal()[1])
+    
+    total_ano = '{:.2f}'.format(anual()[0])
+    saida_ano = '{:.2f}'.format(anual()[2])
+    entrada_ano = '{:.2f}'.format(anual()[1])
+    
     chart = finance_chart()
     chart_ano = finance_year_chart()
     pie_mes_in = pie_chart_mes_in()
@@ -66,9 +71,9 @@ def finance_dia(request):
     finance_total = round(finance_tot, 2)
 
     return render(request, 'finance_dia.html', {'finance': finance,
-                                                'finance_sum': finance_sum,
-                                                'finance_minus': finance_minus,
-                                                'finance_total': finance_total,
+                                                'finance_sum': '{:.2f}'.format(finance_sum),
+                                                'finance_minus': '{:.2f}'.format(finance_minus),
+                                                'finance_total': '{:.2f}'.format(finance_total),
                                                 'qtd': qtd
                                                 })
 
@@ -98,9 +103,9 @@ def finance_sem(request):
     finance_total = round(finance_tot, 2)
 
     return render(request, 'finance_sem.html', {'finance': finance,
-                                                'finance_sum': finance_sum,
-                                                'finance_minus': finance_minus,
-                                                'finance_total': finance_total,
+                                                'finance_sum': '{:.2f}'.format(finance_sum),
+                                                'finance_minus': '{:.2f}'.format(finance_minus),
+                                                'finance_total': '{:.2f}'.format(finance_total),
                                                 })
 
 
@@ -126,16 +131,17 @@ def finance_mes(request):
                 finance_min -= valor
     finance_minus = finance_min * -1
     finance_tot = finance_sum - finance_minus
-    finance_total = round(finance_tot, 2)
+    finance_total = finance_tot
+    
 
     return render(request, 'finance_mes.html', {'finance': finance,
-                                                'finance_sum': finance_sum,
-                                                'finance_minus': finance_minus,
-                                                'finance_total': finance_total,
+                                                'finance_sum': '{:.2f}'.format(finance_sum),
+                                                'finance_minus': '{:.2f}'.format(finance_minus),
+                                                'finance_total': '{:.2f}'.format(finance_total),
                                                 })
 
 
-@user_passes_test(lambda u: u.is_superuser)
+@user_passes_test(lambda u: u.is_superuser) 
 def finance_ano(request):
     year = date.today().year
     finance = Finance.objects.filter(data__year=year)
@@ -158,9 +164,9 @@ def finance_ano(request):
     finance_total = round(finance_tot, 2)
 
     return render(request, 'finance_ano.html', {'finance': finance,
-                                                'finance_sum': finance_sum,
-                                                'finance_minus': finance_minus,
-                                                'finance_total': finance_total,
+                                                'finance_sum': '{:.2f}'.format(finance_sum),
+                                                'finance_minus': '{:.2f}'.format(finance_minus),
+                                                'finance_total': '{:.2f}'.format(finance_total),
                                                 })
 
 
@@ -186,9 +192,9 @@ def finance_tot(request):
     finance_total = round(finance_tot, 2)
 
     return render(request, 'finance_tot.html', {'finance': finance,
-                                                'finance_sum': finance_sum,
-                                                'finance_minus': finance_minus,
-                                                'finance_total': finance_total,
+                                                'finance_sum': '{:.2f}'.format(finance_sum),
+                                                'finance_minus': '{:.2f}'.format(finance_minus),
+                                                'finance_total': '{:.2f}'.format(finance_total),
                                                 })
 
 
@@ -213,7 +219,7 @@ def new_finance(request):
             obs=obs,
             nome=nome,
             data=data,
-            valor='R$ ' + str(valor),
+            valor='R$ {:.2f}'.format(valor),
             movimento=movimento,
             tipo_pgto=tipo_pgto,
             hora=time_br,
@@ -248,7 +254,7 @@ def new_finance_out(request):
             obs=obs,
             nome=nome,
             data=data,
-            valor='R$ ' + str(valor),
+            valor='R$ {:.2f}'.format(valor),
             movimento=movimento,
             hora=time_br,
             tipo_pgto=tipo_pgto,

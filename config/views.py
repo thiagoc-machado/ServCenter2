@@ -33,18 +33,31 @@ def edit_config(request):
 
 def categoria_in(request):
     if request.method == 'POST':
-        categoria = request.POST.get('categoriasIn')
-        cat = Categoria_in(categoria=categoria)
-        cat.save()
-        return redirect('config')
+        if request.POST.get('categoriasIn') != '':
+            categoria = request.POST.get('categoriasIn')
+            cat = Categoria_in(categoria=categoria)
+            cat.save()
+            return redirect('config')
+        
+def del_categoria_in(request, id):
+    categoria = Categoria_in.objects.get(pk=id)
+    categoria.delete()
+    return redirect('config')
+    
 
 def categoria_out(request):
     if request.method == 'POST':
-        categoria = request.POST.get('categoriasOut')
-        cat = Categoria_out(categoria=categoria)
-        cat.save()
-        return redirect('config')
-  
+        if request.POST.get('categoriasOut') != '':
+            categoria = request.POST.get('categoriasOut')
+            cat = Categoria_out(categoria=categoria)
+            cat.save()
+            return redirect('config')
+
+def del_categoria_out(request, id):
+    categoria = Categoria_out.objects.get(pk=id)
+    categoria.delete()
+    return redirect('config')
+    
     
 
     

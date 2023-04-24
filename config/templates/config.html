@@ -57,7 +57,9 @@
       <ul>
         {% for categoria in categorias_in %}
         <li>
-          <p>{{ categoria.categoria }}</p>
+          <a href="{% url 'del_categoria_in' categoria.id %}" id="btn_ap">
+            <i class="bi bi-dash-circle-fill text-danger"></i>
+          </a>{{ categoria.categoria }}
         </li>
         {% endfor %}
       </ul>
@@ -72,7 +74,9 @@
       <ul>
         {% for categoria in categorias_out %}
         <li>
-          <p>{{ categoria.categoria }}</p>
+          <a href="{% url 'del_categoria_out' categoria.id %}" id="btn_ap">
+            <i class="bi bi-dash-circle-fill text-danger"></i>
+          </a><i>{{ categoria.categoria }}</i>
         </li>
         {% endfor %}
         <ul>
