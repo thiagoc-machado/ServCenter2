@@ -26,9 +26,23 @@
     <br/>
   </div>
   <div class="col-sm-1">
+    <form method="post" action="{% url 'restore_backup' %}">
+      {% csrf_token %}
+      <a href="{% url 'restore_backup' %}" class="btn btn-success">Restaurar Backup</a>
+    </form>
+    <br/>
+  </div>
+  <div class="col-sm-1">
     <form method="post" action="{% url 'backup_download' %}">
       {% csrf_token %}
       <a href="{% url 'export_to_excel' %}" class="btn btn-success">Exportar para excel</a>
+    </form>
+    <br/>
+  </div>
+  <div class="col-sm-1">
+    <form method="post" action="{% url 'backup_sqlite' %}">
+      {% csrf_token %}
+      <a href="{% url 'backup_sqlite' %}" class="btn btn-success">Banco de dados</a>
     </form>
     <br/>
   </div>

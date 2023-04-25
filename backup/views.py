@@ -15,6 +15,11 @@ from wsgiref.util import FileWrapper
 import pandas as pd
 import sqlite3
 from datetime import datetime
+from django.core.management import call_command
+from io import BytesIO
+import shutil
+from django.core.files.storage import default_storage
+from django.core.files.uploadedfile import InMemoryUploadedFile
 
 @user_passes_test(lambda u: u.is_superuser)
 def backup(request):
@@ -26,6 +31,58 @@ def backup(request):
     delete_backup_files(request)
     return render(request, 'backup.html', context)
 
+@user_passes_test(lambda u: u.is_superuser)
+def backup_sqlite(request):
+    # Cria um buffer de bytes em memória
+    buffer = BytesIO()
+    call_command('dbbackup', stdout=buffer)
+    buffer.seek(0)
+    response = FileResponse(buffer, content_type='application/x-sqlite3')
+    response['Content-Disposition'] = 'attachment; filename="backup.db"'
+
+    return response
+
+
+@user_passes_test(lambda u: u.is_superuser)
+def restore_backup(request):
+    if request.method == 'POST':
+        if 'backup' not in request.FILES:
+            return HttpResponse('Arquivo de backup não enviado. Por favor, tente novamente.')
+
+        backup_file: InMemoryUploadedFile = request.FILES['backup']
+        backup_file: InMemoryUploadedFile = request.FILES['backup']
+
+        # Crie um diretório temporário para extrair o arquivo ZIP
+        temp_extract_path = os.path.join(settings.MEDIA_ROOT, 'temp_extract')
+        os.makedirs(temp_extract_path, exist_ok=True)
+
+        # Extraia o arquivo ZIP para o diretório temporário
+        with zipfile.ZipFile(backup_file, 'r') as backup_zip:
+            backup_zip.extractall(temp_extract_path)
+
+        # Restaure o banco de dados usando o arquivo de backup extraído
+        db_backup_path = os.path.join(temp_extract_path, 'backup.dump')
+        call_command('dbrestore', input_path=db_backup_path)
+
+        # Copie os arquivos de mídia extraídos para o diretório de mídia do Django
+        media_root_len = len(settings.MEDIA_ROOT)
+        for root, dirs, files in os.walk(temp_extract_path):
+            for file in files:
+                if file != 'backup.dump':
+                    file_path = os.path.join(root, file)
+                    destination_path = os.path.join(settings.MEDIA_ROOT, file_path[media_root_len:])
+                    # Copie o arquivo para o diretório de mídia, preservando a estrutura do diretório
+                    default_storage.save(destination_path, default_storage.open(file_path))
+
+        # Limpe o diretório temporário
+        shutil.rmtree(temp_extract_path)
+        messages.add_message(request, constants.SUCCESS,
+                                 'Restauração de backup realizado com sucesso!')
+        return HttpResponse('Restauração concluída com sucesso.')
+    else:
+        messages.add_message(request, constants.ERROR,
+                                 'Restauração não concluída.')
+        return render(request, 'backup.html')  # Renderize a página de upload do arquivo ZIP
 
 @user_passes_test(lambda u: u.is_superuser)
 def backup_download(request):
@@ -51,6 +108,7 @@ def backup_download(request):
                 file_path = os.path.join(root, file)
                 # remove o prefixo do caminho da pasta de mídia
                 zip_path = file_path[media_root_len:]
+                print(f"Adding file to zip: {file_path} as {zip_path}")
                 backup_zip.write(file_path, zip_path)
         print ('Backup [****** ]')
         
@@ -165,3 +223,4 @@ def delete_backup_files(request):
                 os.remove(file_path)
         except Exception as e:
             print(f'Erro ao excluir o arquivo: {file_path}. Erro: {e}')
+            
