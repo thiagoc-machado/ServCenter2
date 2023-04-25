@@ -33,14 +33,23 @@ def backup(request):
 
 @user_passes_test(lambda u: u.is_superuser)
 def backup_sqlite(request):
-    # Cria um buffer de bytes em memória
-    buffer = BytesIO()
-    call_command('dbbackup', stdout=buffer)
-    buffer.seek(0)
-    response = FileResponse(buffer, content_type='application/x-sqlite3')
-    response['Content-Disposition'] = 'attachment; filename="backup.db"'
+    backup_filename = 'backup.dump'
+    backup_path = os.path.join('media', 'backup', backup_filename)
 
-    return response
+    management.call_command('dbbackup', output_path=backup_path)
+
+    if os.path.exists(backup_path):
+        with open(backup_path, 'rb') as f:
+            response = HttpResponse(
+                f.read(), content_type='application/x-sqlite3')
+            response['Content-Disposition'] = f'attachment; filename="{backup_filename}"'
+            messages.add_message(request, constants.SUCCESS,
+                                'Backup realizado com sucesso!')
+            return response
+    else:
+        messages.add_message(request, constants.ERROR,
+                            'Erro ao efetuar o backup, Nenhum arquivo encontrado!')
+        return redirect('backup')
 
 
 @user_passes_test(lambda u: u.is_superuser)
@@ -144,9 +153,9 @@ def restore(request):
         # Add these lines to disable the prompt for confirmation
         in_buffer = StringIO('yes\n')
         out_buffer = StringIO()
-        with open(backup_path, 'rb') as f:
-            management.call_command(
-                "dbrestore", database='default', input_filename=backup_path, interactive=False)
+        with open(backup_path, 'rb') as backup_file:
+            management.call_command("dbrestore", database='default',
+                                    input_filename=backup_path, interactive=False)
 
         try:
             os.remove(backup_path)

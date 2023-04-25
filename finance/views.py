@@ -10,16 +10,17 @@ import pandas as pd
 from django.utils import timezone
 import matplotlib.pyplot as plt
 from io import BytesIO
-import base64
+from pytz import timezone as tz
+sao_paulo_tz = tz('America/Sao_Paulo')
+    
 
 br_tz = pytz.timezone('America/Sao_Paulo')
 time_br = datetime.now(br_tz).time()
-
+sao_paulo_tz = tz('America/Sao_Paulo')
 
 @user_passes_test(lambda u: u.is_superuser)
 def finance(request):
-    today = date.today()
-    finance = Finance.objects.filter(data=today)
+    finance = Finance.objects.all
     
     total_dia = '{:.2f}'.format(diario()[0])
     entrada_dia = '{:.2f}'.format(diario()[2])
@@ -49,8 +50,9 @@ def finance(request):
 
 @login_required
 def finance_dia(request):
-    today = date.today()
+    today = timezone.localtime(timezone= sao_paulo_tz).date()
     finance = Finance.objects.filter(data=today)
+    finance_all = Finance.objects.all()
     qtd = finance.count()
     finance_sum = 0
     finance_min = 0
@@ -71,6 +73,7 @@ def finance_dia(request):
     finance_total = round(finance_tot, 2)
 
     return render(request, 'finance_dia.html', {'finance': finance,
+                                                'finance_all': finance_all,
                                                 'finance_sum': '{:.2f}'.format(finance_sum),
                                                 'finance_minus': '{:.2f}'.format(finance_minus),
                                                 'finance_total': '{:.2f}'.format(finance_total),
@@ -201,7 +204,7 @@ def finance_tot(request):
 @login_required
 def new_finance(request):
     if request.method == "GET":
-        data = date.today().strftime('%Y-%m-%d')
+        data = timezone.localtime(timezone= sao_paulo_tz).date().strftime('%Y-%m-%d')
         finances = Finance.objects.all()
         categoria = Categoria_in.objects.all()
         return render(request, 'new_finance.html', {'finances': finances, 'data': data, 'categoria': categoria})
@@ -236,7 +239,7 @@ def new_finance(request):
 @login_required
 def new_finance_out(request):
     if request.method == "GET":
-        data = date.today().strftime('%Y-%m-%d')
+        data = timezone.localtime(timezone= sao_paulo_tz).date().strftime('%Y-%m-%d')
         finances = Finance.objects.all()
         categoria = Categoria_out.objects.all()
         return render(request, 'new_finance_out.html', {'finances': finances, 'data': data, 'categoria': categoria})
@@ -274,7 +277,7 @@ def edit_finance(request, id):
 
     if request.method == 'GET':
         return render(request, 'edit_finance.html', {
-            'id': Finance.objects.get(id=id).id,
+            'id': Finance.objects.get(id=id).id,# type: ignore
             'obs': Finance.objects.get(id=id).obs,
             'nome': Finance.objects.get(id=id).nome,
             'data': Finance.objects.get(id=id).data.strftime('%Y-%m-%d'),
@@ -354,7 +357,7 @@ def finance_xlrx(request, id):
 
 
 def diario():
-    today = date.today()
+    today = timezone.localtime(timezone= sao_paulo_tz).date().strftime('%Y-%m-%d')
     finance = Finance.objects.filter(data=today)
     qtd = finance.count()
     finance_sum = 0
@@ -378,7 +381,7 @@ def diario():
 
 
 def semanal():
-    today = datetime.now().date()
+    today = timezone.localtime(timezone= sao_paulo_tz).date()
     start_of_week = today - timedelta(days=today.weekday())
 
     finance = Finance.objects.filter(data__gte=start_of_week)
@@ -404,7 +407,7 @@ def semanal():
 
 
 def mensal():
-    today = date.today()
+    today = timezone.localtime(timezone= sao_paulo_tz).date()
     start_of_month = today.replace(day=1)
 
     finance = Finance.objects.filter(data__gte=start_of_month)
@@ -451,7 +454,7 @@ def anual():
     return (finance_total, finance_minus, finance_sum, qtd)
 
 def finance_chart():
-    now = timezone.now()
+    now = timezone.localtime(timezone= sao_paulo_tz)
     start_month = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
     end_month = (start_month + timedelta(days=32)).replace(day=1) - timedelta(days=1)
     finance_data = Finance.objects.filter(data__range=[start_month, end_month])

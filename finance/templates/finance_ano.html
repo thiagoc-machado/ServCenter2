@@ -132,7 +132,7 @@
               {% for finances in finance %}
               <tr id="fin_table">
                 <th><a href="{% url 'edit_finance' finances.id %}">{{ finances.id }}</a></th>
-                <th><a href="{% url 'edit_finance' finances.id %}">{{ finances.os }}</a></th>
+                <th><a href="{% url 'edit_finance' finances.id %}">{{ finances.obs }}</a></th>
                 <th><a href="{% url 'edit_finance' finances.id %}">{{ finances.nome }}</a></th>
                 <th><a href="{% url 'edit_finance' finances.id %}">{{ finances.valor }}</a></th>
                 <th><a href="{% url 'edit_finance' finances.id %}">{{ finances.data }}</a></th>

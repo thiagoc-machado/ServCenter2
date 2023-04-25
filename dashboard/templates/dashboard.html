@@ -102,7 +102,7 @@
                 </tr>
               </thead>
               <tbody>
-                {% for finances in finance %}
+                {% for finances in all_finance %}
                 <tr id="fin_table">
                   <th>
                     <a href="{% url 'edit_finance' finances.id %}"

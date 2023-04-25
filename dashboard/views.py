@@ -5,30 +5,32 @@ from datetime import date
 from datetime import datetime
 from finance.models import Finance
 from pytz import timezone as tz
-
+ 
 
 from django.utils import timezone
 
 def get_today_values():
-    today = timezone.localtime().date()
-    start = timezone.make_aware(datetime.combine(today, datetime.min.time()))
-    end = timezone.make_aware(datetime.combine(today, datetime.max.time()))
+    sao_paulo_tz = tz('America/Sao_Paulo')
+    today = timezone.localtime(timezone= sao_paulo_tz).date()
+    start = timezone.make_aware(datetime.combine(today, datetime.min.time()), timezone=sao_paulo_tz)
+    end = timezone.make_aware(datetime.combine(today, datetime.max.time()), timezone=sao_paulo_tz)
     return Finance.objects.filter(data__range=(start, end))
 
 
+
 def get_values_by_hour():
-    values = [0] * 11  # 11 horas de trabalho, das 8h às 18h
+    values = [0] * 25  # 11 horas de trabalho, das 8h às 18h
     today_values = get_today_values()
     for value in today_values:
         if value.movimento == 'entrada':
             value_datetime = datetime.combine(value.data, value.hora)
             value_datetime = tz('America/Sao_Paulo').localize(value_datetime)
             hour = value_datetime.hour - 8  # ajuste de índice da lista
-            if 0 <= hour <= 10:
-                value_str = value.valor.replace(
+            if 0 <= hour <= 25:
+                value_str = value.valor.replace(# type: ignore
                     'R$', '').replace(',', '.').strip()
                 value_float = float(value_str)
-                values[hour] += value_float
+                values[hour] += value_float # type: ignore
     return values
 
 
@@ -41,10 +43,10 @@ def get_output_by_hour():
             value_datetime = tz('America/Sao_Paulo').localize(value_datetime)
             hour = value_datetime.hour - 8  # ajuste de índice da lista
             if 0 <= hour <= 10:
-                value_str = value.valor.replace(
+                value_str = value.valor.replace(# type: ignore
                     'R$', '').replace(',', '.').strip()
                 value_float = float(value_str)
-                values[hour] += value_float
+                values[hour] += value_float# type: ignore
     return values
 
 
@@ -52,7 +54,7 @@ def get_output_by_hour():
 def dashboard(request):
     if request.method == "GET":
         today = date.today()
-
+        all_finance = Finance.objects.all()
         finance = Finance.objects.filter(data=today)
         qtd = finance.count()
         values_by_hour = get_values_by_hour()
@@ -77,6 +79,7 @@ def dashboard(request):
         
         
         return render(request, 'dashboard.html', {'finance': finance,
+                                                  'all_finance': all_finance,
                                                   'finance_sum': round(finance_sum,2),
                                                   'finance_minus': round(finance_minus,2),
                                                   'finance_total': round(finance_total,2),

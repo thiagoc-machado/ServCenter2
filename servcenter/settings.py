@@ -143,6 +143,7 @@ LOGIN_REDIRECT_URL = '/dashboard'
 
 CORS_ORIGIN_WHITELIST = []
 
+DBBACKUP_EXTENSION = 'dump'
 DBBACKUP_STORAGE = 'django.core.files.storage.FileSystemStorage'
 DBBACKUP_STORAGE_OPTIONS = {'location': os.path.join(MEDIA_ROOT, 'backup')}
 DBBACKUP_DIRECTORY = os.path.join(MEDIA_ROOT, 'backup')
